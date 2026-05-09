@@ -1,6 +1,6 @@
 # 🎭 DeepFake Detection Using Spatiotemporal Deep Learning with Explainable AI
 
-> **Final Year Project (FYP)**  
+> **Academic Research Project**  
 > **Domain:** Computer Vision & Deep Learning  
 > **Deployment:** [Hugging Face Spaces – Deep-Fake-Detection](https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection) *(Live Demo – You can verify its functioning here)*
 
@@ -88,51 +88,52 @@ Our hybrid **Xception + LSTM** design is motivated by:
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         DEEPFAKE DETECTION PIPELINE                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌─────────────┐    ┌──────────────────┐    ┌──────────────────────┐      │
-│   │   Input     │───▶│  Preprocessing   │───▶│  Face Extraction     │      │
-│   │ (Video/Img) │    │  (OpenCV DNN)    │    │  + BG Removal        │      │
-│   └─────────────┘    └──────────────────┘    └──────────────────────┘      │
-│                                                       │                     │
-│                                                       ▼                     │
-│   ┌─────────────────────────────────────────────────────────────────┐      │
-│   │                    SPATIOTEMPORAL MODEL                         │      │
-│   │  ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐     │      │
-│   │  │   Frames    │───▶│  Xception   │───▶│  Global AvgPool │     │      │
-│   │  │ 299×299×3   │    │  (CNN)      │    │  (per frame)    │     │      │
-│   │  └─────────────┘    └─────────────┘    └─────────────────┘     │      │
-│   │         │                                          │            │      │
-│   │         ▼                                          ▼            │      │
-│   │  ┌─────────────────────────────────────────────────────────┐    │      │
-│   │  │              LSTM (64 units)                            │    │      │
-│   │  │         Temporal feature aggregation                    │    │      │
-│   │  └─────────────────────────────────────────────────────────┘    │      │
-│   │                              │                                  │      │
-│   │                              ▼                                  │      │
-│   │  ┌─────────────────────────────────────────────────────────┐    │      │
-│   │  │              Dense (1) + Sigmoid                        │    │      │
-│   │  │         Fake Probability [0, 1]                         │    │      │
-│   │  └─────────────────────────────────────────────────────────┘    │      │
-│   └─────────────────────────────────────────────────────────────────┘      │
-│                              │                                              │
-│                              ▼                                              │
-│   ┌───────────────────────────────────────────────────────────────────┐    │
-│   │                        POST-PROCESSING                            │    │
-│   │  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────┐   │    │
-│   │  │   Ensemble  │───▶│  Threshold  │───▶│  LIME Explanation   │   │    │
-│   │  │  (V2 only)  │    │   (0.75)    │    │  (XAI Heatmap)      │   │    │
-│   │  └─────────────┘    └─────────────┘    └─────────────────────┘   │    │
-│   └───────────────────────────────────────────────────────────────────┘    │
-│                              │                                              │
-│                              ▼                                              │
-│   ┌─────────────────────────────────────────────────────────────────────┐  │
-│   │                         GRADIO UI                                   │  │
-│   │     Bilingual (EN/UR) · Light/Dark Theme · Video + Image Support    │  │
-│   └─────────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------------+
+|                    DEEPFAKE DETECTION SYSTEM PIPELINE                       |
++-----------------------------------------------------------------------------+
+|                                                                             |
+|  +-----------+     +----------------+     +--------------------+            |
+|  |   INPUT   |---->| PREPROCESSING  |---->| FACE EXTRACTION    |            |
+|  |Video/Image|     |  (OpenCV DNN)  |     | + BG Removal       |            |
+|  +-----------+     +----------------+     +--------------------+            |
+|                                                     |                       |
+|                                                     v                       |
+|  +---------------------------------------------------------------+          |
+|  |                  SPATIOTEMPORAL MODEL                         |          |
+|  |                                                               |          |
+|  |  +-------------+   +-------------+   +-----------------+      |          |
+|  |  |   Frames    |-->|  Xception   |-->| GlobalAverage   |      |          |
+|  |  | 299x299x3   |   |   (CNN)     |   |   Pooling       |      |          |
+|  |  +-------------+   +-------------+   +-----------------+      |          |
+|  |         |                    |              |                 |          |
+|  |         v                    v              v                 |          |
+|  |  +-----------------------------------------------------+      |          |
+|  |  |              LSTM (64 units)                        |      |          |
+|  |  |         Temporal Feature Aggregation                |      |          |
+|  |  +-----------------------------------------------------+      |          |
+|  |                           |                                   |          |
+|  |                           v                                   |          |
+|  |  +-----------------------------------------------------+      |          |
+|  |  |         Dense(1) + Sigmoid                          |      |          |
+|  |  |         Fake Probability [0, 1]                     |      |          |
+|  |  +-----------------------------------------------------+      |          |
+|  +---------------------------------------------------------------+          |
+|                           |                                                 |
+|                           v                                                 |
+|  +--------------------------------------------------------------------+     |
+|  |                      POST-PROCESSING                               |     |
+|  |  +-------------+   +-------------+   +-------------------------+   |     |
+|  |  |   Ensemble  |-->|  Threshold  |-->| LIME Explanation        |   |     |
+|  |  |  (V2 only)  |   |   (0.75)    |   | (XAI Heatmap)           |   |     |
+|  |  +-------------+   +-------------+   +-------------------------+   |     |
+|  +--------------------------------------------------------------------+     |
+|                           |                                                 |
+|                           v                                                 |
+|  +-----------------------------------------------------------------------+  |
+|  |                           GRADIO UI                                   |  |
+|  |   Bilingual (EN/UR) | Light/Dark Theme | Video + Image Support        |  |
+|  +-----------------------------------------------------------------------+  |
++-----------------------------------------------------------------------------+
 ```
 
 ---
@@ -561,7 +562,7 @@ The XAI heatmaps consistently highlight regions where GAN-based manipulations ar
 
 ## Team & Acknowledgements
 
-This project was developed as a **Final Year Project** in the domain of Computer Vision and Deep Learning.
+This project was developed as an **academic research initiative** in the domain of Computer Vision and Deep Learning.
 
 **Special thanks to:**
 - The creators of **FaceForensics++** for the benchmark dataset.
@@ -586,6 +587,6 @@ This project was developed as a **Final Year Project** in the domain of Computer
 ---
 
 <p align="center">
-  <b>🎓 Final Year Project – DeepFake Detection 🎓</b><br>
+  <b>🎓 DeepFake Detection – Academic Research Project 🎓</b><br>
   <a href="https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection">🚀 Try the Live Demo</a>
 </p>
