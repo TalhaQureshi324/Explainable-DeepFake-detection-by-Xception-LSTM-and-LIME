@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-11-01T20:39:05.933334+00:00",
+  "class_mapping": {
+    "0": "REAL",
+    "1": "FAKE"
+  },
+  "score_semantics": "sigmoid output = P(FAKE); higher score = more fake",
+  "decision_threshold": 0.75,
+  "decision_rule": "FAKE if mean score > threshold else REAL; no INCONCLUSIVE band in current deployment",
+  "normalization": "frames scaled to [0, 1] (no ImageNet mean subtraction)",
+  "models": [
+    {
+      "file": "deepfake_detector_model_v2.keras",
+      "sha256": "9ee14530166b842ce0aa6ac74500ac138993f5fbe82a927df7ddee0ffc261228",
+      "size_bytes": 166313962,
+      "input_shape": [
+        null,
+        32,
+        299,
+        299,
+        3
+      ],
+      "num_frames": 32,
+      "frame_size": [
+        299,
+        299
+      ],
+      "output_shape": [
+        null,
+        1
+      ],
+      "output_activation": "sigmoid",
+      "total_params": 21402473,
+      "architecture": "TimeDistributed(Xception imagenet) -> TimeDistributed(GAP) -> LSTM(64) -> Dense(1, sigmoid)",
+      "role": "preferred (32-frame, ensemble at inference)",
+      "source": "https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection"
+    },
+    {
+      "file": "deepfake_detector_model.keras",
+      "sha256": "3c101cbf3baeda47d223370f72421a157d775b0046388f2fdfa08f8642c1dcab",
+      "size_bytes": 166313962,
+      "input_shape": [
+        null,
+        10,
+        299,
+        299,
+        3
+      ],
+      "num_frames": 10,
+      "frame_size": [
+        299,
+        299
+      ],
+      "output_shape": [
+        null,
+        1
+      ],
+      "output_activation": "sigmoid",
+      "total_params": 21402473,
+      "architecture": "TimeDistributed(Xception imagenet) -> TimeDistributed(GAP) -> LSTM(64) -> Dense(1, sigmoid)",
+      "role": "fallback (10-frame)",
+      "source": "https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection"
+    }
+  ]
+}
