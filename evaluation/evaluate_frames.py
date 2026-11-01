@@ -207,7 +207,7 @@ def main() -> None:
         "sample": {"real": counts[0], "fake": counts[1], "seed": args.seed,
                    "n_real_requested": args.n_real, "n_fake_requested": args.n_fake},
         "skipped": skipped,
-        "evaluated": len(sequences),
+        "evaluated": len(scores),
         "roc_auc": auc,
         "score_stats": {
             "real_mean": float(np.mean([s for s, l in zip(scores, labels) if l == 0])) if counts[0] else None,
