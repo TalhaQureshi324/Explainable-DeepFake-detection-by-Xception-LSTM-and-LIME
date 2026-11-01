@@ -1,0 +1,462 @@
+{
+  "tag": "deepfake_detector_model_v1_train",
+  "model": "deepfake_detector_model.keras",
+  "mode": "v1",
+  "split": "train",
+  "data_dir": "F:/Computer Vision/FYP/processed_dataset",
+  "sample": {
+    "real": 40,
+    "fake": 40,
+    "seed": 42,
+    "n_real_requested": 40,
+    "n_fake_requested": 40
+  },
+  "skipped": [],
+  "evaluated": 80,
+  "roc_auc": 0.819375,
+  "score_stats": {
+    "real_mean": 0.47851421162486074,
+    "real_std": 0.11764232765479252,
+    "fake_mean": 0.6237779498100281,
+    "fake_std": 0.10512206144154271
+  },
+  "metrics": [
+    {
+      "threshold": 0.5,
+      "accuracy": 0.7375,
+      "balanced_accuracy": 0.7375,
+      "precision": 0.6938775510204082,
+      "recall": 0.85,
+      "specificity": 0.625,
+      "f1": 0.7640449438202247,
+      "fpr": 0.375,
+      "fnr": 0.15,
+      "confusion_matrix": {
+        "tp": 34,
+        "fp": 15,
+        "fn": 6,
+        "tn": 25
+      }
+    },
+    {
+      "threshold": 0.75,
+      "accuracy": 0.55,
+      "balanced_accuracy": 0.5499999999999999,
+      "precision": 0.75,
+      "recall": 0.15,
+      "specificity": 0.95,
+      "f1": 0.24999999999999997,
+      "fpr": 0.05,
+      "fnr": 0.85,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 2,
+        "fn": 34,
+        "tn": 38
+      }
+    }
+  ],
+  "per_video": [
+    {
+      "video": "01__walking_outside_cafe_disgusted",
+      "label": "REAL",
+      "score": 0.45263534784317017
+    },
+    {
+      "video": "27__talking_against_wall",
+      "label": "REAL",
+      "score": 0.4611983895301819
+    },
+    {
+      "video": "26__kitchen_still",
+      "label": "REAL",
+      "score": 0.6477020382881165
+    },
+    {
+      "video": "03_01__meeting_serious__JZUXXFRB",
+      "label": "FAKE",
+      "score": 0.7218506932258606
+    },
+    {
+      "video": "11__talking_angry_couch",
+      "label": "REAL",
+      "score": 0.2757858335971832
+    },
+    {
+      "video": "06__podium_speech_happy",
+      "label": "REAL",
+      "score": 0.281814306974411
+    },
+    {
+      "video": "06_27__walking_and_outside_surprised__SZWVBWY4",
+      "label": "FAKE",
+      "score": 0.5763124823570251
+    },
+    {
+      "video": "13_09__walking_down_indoor_hall_disgust__3GQ49P2J",
+      "label": "FAKE",
+      "score": 0.7832115292549133
+    },
+    {
+      "video": "21_01__talking_angry_couch__03X7CELV",
+      "label": "FAKE",
+      "score": 0.6255887746810913
+    },
+    {
+      "video": "21__podium_speech_happy",
+      "label": "REAL",
+      "score": 0.34726619720458984
+    },
+    {
+      "video": "05__kitchen_pan",
+      "label": "REAL",
+      "score": 0.39374008774757385
+    },
+    {
+      "video": "12__outside_talking_still_laughing",
+      "label": "REAL",
+      "score": 0.38438737392425537
+    },
+    {
+      "video": "08__exit_phone_room",
+      "label": "REAL",
+      "score": 0.5381402969360352
+    },
+    {
+      "video": "14__kitchen_pan",
+      "label": "REAL",
+      "score": 0.4647269546985626
+    },
+    {
+      "video": "05__exit_phone_room",
+      "label": "REAL",
+      "score": 0.2932552695274353
+    },
+    {
+      "video": "02__outside_talking_pan_laughing",
+      "label": "REAL",
+      "score": 0.3919273018836975
+    },
+    {
+      "video": "08_28__podium_speech_happy__HIOU8Z8I",
+      "label": "FAKE",
+      "score": 0.5458441972732544
+    },
+    {
+      "video": "05__outside_talking_still_laughing",
+      "label": "REAL",
+      "score": 0.2932068109512329
+    },
+    {
+      "video": "14__outside_talking_pan_laughing",
+      "label": "REAL",
+      "score": 0.44233667850494385
+    },
+    {
+      "video": "15_18__kitchen_pan__V5VHLCOW",
+      "label": "FAKE",
+      "score": 0.5566496849060059
+    },
+    {
+      "video": "11__walk_down_hall_angry",
+      "label": "REAL",
+      "score": 0.4028365910053253
+    },
+    {
+      "video": "02_06__kitchen_still__HZAXM70B",
+      "label": "FAKE",
+      "score": 0.6605063676834106
+    },
+    {
+      "video": "17__outside_talking_pan_laughing",
+      "label": "REAL",
+      "score": 0.6764891147613525
+    },
+    {
+      "video": "12_13__outside_talking_pan_laughing__2TM4IFSF",
+      "label": "FAKE",
+      "score": 0.7257404327392578
+    },
+    {
+      "video": "06_18__walking_down_indoor_hall_disgust__DEA1TCLN",
+      "label": "FAKE",
+      "score": 0.4397696852684021
+    },
+    {
+      "video": "15_07__hugging_happy__9Z2MLKVX",
+      "label": "FAKE",
+      "score": 0.586168646812439
+    },
+    {
+      "video": "04__walk_down_hall_angry",
+      "label": "REAL",
+      "score": 0.5263149738311768
+    },
+    {
+      "video": "03_02__secret_conversation__GYX5OFTD",
+      "label": "FAKE",
+      "score": 0.7721868753433228
+    },
+    {
+      "video": "11_03__walk_down_hall_angry__P08VGHTA",
+      "label": "FAKE",
+      "score": 0.5521690845489502
+    },
+    {
+      "video": "01__meeting_serious",
+      "label": "REAL",
+      "score": 0.5836856365203857
+    },
+    {
+      "video": "16_05__walking_down_street_outside_angry__94435UY3",
+      "label": "FAKE",
+      "score": 0.48877379298210144
+    },
+    {
+      "video": "07_13__walking_down_street_outside_angry__RVQCPCJF",
+      "label": "FAKE",
+      "score": 0.38085463643074036
+    },
+    {
+      "video": "12_25__walking_down_indoor_hall_disgust__FQE07ND1",
+      "label": "FAKE",
+      "score": 0.7758920192718506
+    },
+    {
+      "video": "16_08__hugging_happy__8Q7JCS95",
+      "label": "FAKE",
+      "score": 0.6236191987991333
+    },
+    {
+      "video": "09_27__exit_phone_room__RC9KATOO",
+      "label": "FAKE",
+      "score": 0.7447346448898315
+    },
+    {
+      "video": "04__outside_talking_still_laughing",
+      "label": "REAL",
+      "score": 0.5621445178985596
+    },
+    {
+      "video": "23__kitchen_pan",
+      "label": "REAL",
+      "score": 0.4832746386528015
+    },
+    {
+      "video": "18_11__secret_conversation__JJ1YREUN",
+      "label": "FAKE",
+      "score": 0.7550471425056458
+    },
+    {
+      "video": "02__walking_down_indoor_hall_disgust",
+      "label": "REAL",
+      "score": 0.505379855632782
+    },
+    {
+      "video": "06_18__walk_down_hall_angry__LH0KWJKM",
+      "label": "FAKE",
+      "score": 0.4335867166519165
+    },
+    {
+      "video": "05__walking_outside_cafe_disgusted",
+      "label": "REAL",
+      "score": 0.3339928984642029
+    },
+    {
+      "video": "23__walk_down_hall_angry",
+      "label": "REAL",
+      "score": 0.48335832357406616
+    },
+    {
+      "video": "02__hugging_happy",
+      "label": "REAL",
+      "score": 0.48787549138069153
+    },
+    {
+      "video": "26_14__walking_outside_cafe_disgusted__ILLP29ZH",
+      "label": "FAKE",
+      "score": 0.6009289026260376
+    },
+    {
+      "video": "19__podium_speech_happy",
+      "label": "REAL",
+      "score": 0.4394473731517792
+    },
+    {
+      "video": "03_07__talking_against_wall__9NVYPOMN",
+      "label": "FAKE",
+      "score": 0.6863713264465332
+    },
+    {
+      "video": "09_26__outside_talking_still_laughing__QSE5A0GF",
+      "label": "FAKE",
+      "score": 0.7402870655059814
+    },
+    {
+      "video": "08__kitchen_still",
+      "label": "REAL",
+      "score": 0.6593001484870911
+    },
+    {
+      "video": "11__walking_outside_cafe_disgusted",
+      "label": "REAL",
+      "score": 0.4609091281890869
+    },
+    {
+      "video": "19__outside_talking_still_laughing",
+      "label": "REAL",
+      "score": 0.4986782670021057
+    },
+    {
+      "video": "12_13__podium_speech_happy__BFH4F0N8",
+      "label": "FAKE",
+      "score": 0.6922351121902466
+    },
+    {
+      "video": "27_07__kitchen_pan__B5S6XY2L",
+      "label": "FAKE",
+      "score": 0.5142273902893066
+    },
+    {
+      "video": "14_03__exit_phone_room__7JPPCV50",
+      "label": "FAKE",
+      "score": 0.6357019543647766
+    },
+    {
+      "video": "02__outside_talking_still_laughing",
+      "label": "REAL",
+      "score": 0.3827541172504425
+    },
+    {
+      "video": "02_27__outside_talking_still_laughing__FV8M8O2C",
+      "label": "FAKE",
+      "score": 0.48397397994995117
+    },
+    {
+      "video": "21__walk_down_hall_angry",
+      "label": "REAL",
+      "score": 0.524736225605011
+    },
+    {
+      "video": "27__walking_outside_cafe_disgusted",
+      "label": "REAL",
+      "score": 0.4486882984638214
+    },
+    {
+      "video": "15_12__walking_down_indoor_hall_disgust__RK17XFJ9",
+      "label": "FAKE",
+      "score": 0.6232253313064575
+    },
+    {
+      "video": "13__exit_phone_room",
+      "label": "REAL",
+      "score": 0.44857046008110046
+    },
+    {
+      "video": "13_07__walking_outside_cafe_disgusted__RVQCPCJF",
+      "label": "FAKE",
+      "score": 0.7245339155197144
+    },
+    {
+      "video": "07__hugging_happy",
+      "label": "REAL",
+      "score": 0.5163708925247192
+    },
+    {
+      "video": "09_13__walk_down_hall_angry__BVZGDFD8",
+      "label": "FAKE",
+      "score": 0.7586055994033813
+    },
+    {
+      "video": "17__talking_against_wall",
+      "label": "REAL",
+      "score": 0.45907410979270935
+    },
+    {
+      "video": "14_12__walk_down_hall_angry__Z7EWFA0P",
+      "label": "FAKE",
+      "score": 0.6336684823036194
+    },
+    {
+      "video": "17__kitchen_pan",
+      "label": "REAL",
+      "score": 0.5540174245834351
+    },
+    {
+      "video": "02_12__podium_speech_happy__9D2ZHEKW",
+      "label": "FAKE",
+      "score": 0.6185708045959473
+    },
+    {
+      "video": "03_15__walking_down_indoor_hall_disgust__OY4I7ZU8",
+      "label": "FAKE",
+      "score": 0.580954909324646
+    },
+    {
+      "video": "20_21__walking_down_street_outside_angry__ZCB5OMEW",
+      "label": "FAKE",
+      "score": 0.78704833984375
+    },
+    {
+      "video": "09_01__talking_angry_couch__P70H1JB0",
+      "label": "FAKE",
+      "score": 0.6642177700996399
+    },
+    {
+      "video": "12_13__walking_down_street_outside_angry__2TM4IFSF",
+      "label": "FAKE",
+      "score": 0.5654053688049316
+    },
+    {
+      "video": "18__kitchen_pan",
+      "label": "REAL",
+      "score": 0.5932579040527344
+    },
+    {
+      "video": "28__walk_down_hall_angry",
+      "label": "REAL",
+      "score": 0.5120861530303955
+    },
+    {
+      "video": "13__walking_down_indoor_hall_disgust",
+      "label": "REAL",
+      "score": 0.7594410181045532
+    },
+    {
+      "video": "10__talking_angry_couch",
+      "label": "REAL",
+      "score": 0.3960072994232178
+    },
+    {
+      "video": "15_03__walk_down_hall_angry__AIOM1U5V",
+      "label": "FAKE",
+      "score": 0.5844510793685913
+    },
+    {
+      "video": "10_22__kitchen_pan__EHARPYBT",
+      "label": "FAKE",
+      "score": 0.6807758808135986
+    },
+    {
+      "video": "25_21__talking_against_wall__NFBISHIN",
+      "label": "FAKE",
+      "score": 0.6114797592163086
+    },
+    {
+      "video": "11__secret_conversation",
+      "label": "REAL",
+      "score": 0.7737547159194946
+    },
+    {
+      "video": "26_12__walk_down_hall_angry__BFBNM8FR",
+      "label": "FAKE",
+      "score": 0.5493437051773071
+    },
+    {
+      "video": "02_15__outside_talking_still_laughing__HTG660F8",
+      "label": "FAKE",
+      "score": 0.46660470962524414
+    }
+  ],
+  "generated_at_utc": "2026-11-01T21:27:38.440244+00:00"
+}

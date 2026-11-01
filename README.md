@@ -2,7 +2,7 @@
 
 > **Academic Research Project**  
 > **Domain:** Computer Vision & Deep Learning  
-> **Deployment:** [Hugging Face Spaces – Deep-Fake-Detection](https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection) *(Live Demo – You can verify its functioning here)*
+> **Deployment:** [Hugging Face Spaces – Deep-Fake-Detection](https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection) *(Live Demo – You can verify its functioning here)*
 
 ---
 
@@ -135,6 +135,33 @@ Our hybrid **Xception + LSTM** design is motivated by:
 |  +-----------------------------------------------------------------------+  |
 +-----------------------------------------------------------------------------+
 ```
+
+---
+
+## Model Provenance & Checksums
+
+The trained checkpoints are **not** stored in this repository. They are distributed
+through the Hugging Face Space repository and are also tracked there with Git LFS.
+`evaluation/model_manifest.json` records, for every checkpoint: SHA-256 hash, file
+size, input shape, parameter count and class mapping. Current shipped models:
+
+| Checkpoint | Input | Params | SHA-256 (prefix) |
+|------------|-------|--------|------------------|
+| `deepfake_detector_model_v2.keras` (preferred) | 32 × 299 × 299 × 3 | 21,402,473 | `9ee14530…` |
+| `deepfake_detector_model.keras` (fallback) | 10 × 299 × 299 × 3 | 21,402,473 | `3c101cbf…` |
+
+**Class mapping:** sigmoid output = P(FAKE) — `0 = REAL`, `1 = FAKE`; frames are
+normalised to `[0, 1]` (no ImageNet mean subtraction). Always re-verify against
+`evaluation/model_manifest.json` before trusting a checkpoint.
+
+### Threshold policy
+
+- **Model-native operating point:** 0.5 (used by `model.evaluate`, `val.py`).
+- **Deployment decision threshold:** 0.75 (used by `app.py`, `test.py`,
+  `test_version2.py`) — deliberately conservative to reduce false FAKE
+  accusations at the cost of more missed fakes.
+- Evaluation results are always reported **at both thresholds** so numbers are
+  never ambiguous. See [evaluation/EVALUATION.md](evaluation/EVALUATION.md).
 
 ---
 
@@ -299,48 +326,51 @@ deepfake-main/
 │
 ├── 📄 README.md                          # This file
 ├── 📄 requirements.txt                   # Python dependencies
+├── 📄 .gitignore                         # Keeps models/datasets/temp artifacts out of git
 │
 ├── 🤖 TRAINING
 │   ├── main.py                           # V1 Training Script (10-frame model)
 │   ├── main_version2.py                  # V2 Training Script (32-frame + ensemble)
-│   ├── val.py                            # Model evaluation on validation set
+│   ├── val.py                            # Model evaluation on validation set (0.5 + 0.75 thresholds)
 │   └── preprocess_all.py                 # Legacy Haar Cascade preprocessing
 │
 ├── 🧪 TESTING & INFERENCE
 │   ├── test.py                           # V1 Testing + LIME XAI
 │   ├── test_version2.py                  # V2 Testing + Ensemble + LIME XAI
 │   ├── explain.py                        # Standalone LIME explanation module
-│   └── testing/                          # Folder for test videos
-│       ├── ASSAD.mp4
-│       ├── mine2.mp4
-│       └── shaheer boi.mp4
+│   └── testing/                          # Folder for test videos (gitignored)
 │
 ├── 🖼️ PREPROCESSING
-│   ├── preprocessing.py                  # Main preprocessing module (OpenCV DNN)
+│   ├── preprocessing.py                  # Main preprocessing module (OpenCV DNN, portable paths)
 │   ├── preprocess.py                     # Alternative preprocessing (MediaPipe)
-│   └── preprocessed_new/                 # Output directory for extracted faces
+│   ├── preprocess_all.py                 # Legacy preprocessing helper
+│   └── preprocessed_new/                 # Output directory for extracted faces (gitignored)
 │
-├── 🚀 DEPLOYMENT
-│   ├── app.py                            # Gradio web app (Hugging Face Spaces)
-│   ├── deepfake_detector_model.keras     # V1 trained model (~166 MB)
-│   └── deepfake_detector_model_v2.keras  # V2 trained model (~166 MB)
+├── 🔬 EVALUATION & BASELINE VERIFICATION
+│   └── evaluation/
+│       ├── model_manifest.py             # Checksums + architecture manifest generator
+│       ├── model_manifest.json           # Recorded provenance of shipped checkpoints
+│       ├── evaluate_frames.py            # Metrics (acc/P/R/F1/AUC/CM) on processed frame folders
+│       ├── evaluate_video_e2e.py         # End-to-end raw-video inference consistency check
+│       ├── EVALUATION.md                 # Recorded results, overfitting assessment, limitations
+│       └── results_*.json / baseline_e2e_results.json
 │
 ├── 🗂️ DATASET ORGANIZATION
-│   ├── script.py                         # Reorganizes FF++ into train/val splits
-│   └── data/                             # Raw video dataset
-│       ├── train/
-│       │   ├── REAL/
-│       │   └── FAKE/
-│       └── val/
-│           ├── REAL/
-│           └── FAKE/
+│   ├── script.py                         # Reorganizes FF++ into train/val splits (CLI args)
+│   └── data/                             # Raw video dataset (gitignored)
+│       ├── train/{REAL,FAKE}/
+│       └── val/{REAL,FAKE}/
 │
 ├── 📊 XAI OUTPUTS
-│   ├── xai_outputs/                      # V1 LIME heatmaps
-│   ├── xai_outputs_v2/                   # V2 LIME heatmaps
-│   ├── temp_runtime_frames/              # V1 temp extraction cache
-│   ├── temp_runtime_frames_v2/           # V2 temp extraction cache
+│   ├── xai_outputs/                      # V1 LIME heatmaps (gitignored)
+│   ├── xai_outputs_v2/                   # V2 LIME heatmaps (gitignored)
+│   ├── temp_runtime_frames/              # V1 temp extraction cache (gitignored)
+│   ├── temp_runtime_frames_v2/           # V2 temp extraction cache (gitignored)
 │   └── xai_*.png                         # Sample XAI visualizations
+│
+├── 🚀 DEPLOYMENT
+│   └── app.py                            # Gradio web app (Hugging Face Spaces)
+│                                          # + *.keras checkpoints (Git LFS / HF Space, gitignored here)
 │
 └── 🖼️ SAMPLE IMAGES
     ├── case1.jpeg
@@ -395,13 +425,28 @@ pip install -r requirements.txt
 | matplotlib | latest | Visualization |
 | tqdm | latest | Progress bars |
 
-### Step 4: Download Face Detector Weights
+### Step 4: Face Detector Weights
 
-The OpenCV DNN face detector files are **auto-downloaded** on first run by `app.py`, or you can manually place them in the project root:
-- `deploy.prototxt`
-- `res10_300x300_ssd_iter_140000.caffemodel`
+The OpenCV DNN face detector files (`deploy.prototxt`,
+`res10_300x300_ssd_iter_140000.caffemodel`) are **auto-downloaded on first run**
+by `app.py` and by `preprocessing.FaceExtractor`. They are looked up in this
+order: the directory in the `FYP_MODELS_DIR` env var → the repo root → the
+repo's `models/` folder. You never need to download them manually.
 
-### Step 5: Prepare Dataset
+### Step 5: Model Checkpoints
+
+The `.keras` checkpoints are not in this repository. Copy them to the folder
+you run from (`app.py`, `test.py`, `test_version2.py` expect them in the
+working directory), or download them from the Hugging Face Space:
+
+```bash
+curl -L -o deepfake_detector_model_v2.keras \
+  "https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection/resolve/main/deepfake_detector_model_v2.keras"
+```
+
+Verify the SHA-256 against `evaluation/model_manifest.json` before use.
+
+### Step 6: Prepare Dataset
 
 Organize your FaceForensics++ videos as:
 ```
@@ -479,8 +524,30 @@ explain_prediction("deepfake_detector_model.keras", processed_frames_array)
 ```bash
 python val.py
 ```
-- Evaluates the V1 model on the validation set.
-- Prints validation loss, accuracy, and sample predictions.
+- Evaluates the V1 model on the validation set (`processed_dataset/`).
+- Prints validation loss, accuracy, ROC-AUC and precision/recall/F1 at **both**
+  the 0.5 model threshold and the 0.75 deployment threshold.
+
+### Baseline Verification & Metrics (recommended before any refactor)
+
+```bash
+# 1. Record checkpoint provenance (hashes, input shapes)
+python evaluation/model_manifest.py --models-dir models_store
+
+# 2. Metrics on the preprocessed validation frames (mirrors training inputs)
+python evaluation/evaluate_frames.py \
+    --model models_store/deepfake_detector_model_v2.keras --mode v2 \
+    --split val --n-real 73 --n-fake 146 \
+    --data-dir /path/to/processed_dataset --out evaluation/results_v2_val.json
+
+# 3. End-to-end check: raw videos through the real inference path
+python evaluation/evaluate_video_e2e.py \
+    --videos /path/to/data --data-dir /path/to/processed_dataset \
+    --n-real 3 --n-fake 3
+```
+
+Full recorded results, the overfitting assessment and known limitations live in
+[evaluation/EVALUATION.md](evaluation/EVALUATION.md).
 
 ### Deployment (Gradio App)
 
@@ -503,17 +570,38 @@ git commit -m "Deploy DeepFake Detection App"
 git push
 ```
 
-> **🚀 Live Deployment:** [https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection](https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection)  
+> **🚀 Live Deployment:** [https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection](https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection)  
 > *You can verify its functioning by uploading any video or image containing a face.*
 
 ---
 
 ## Results & Evaluation
 
+### Measured Performance (Phase 0 verification)
+
+Metrics were measured with [`evaluation/evaluate_frames.py`](evaluation/evaluate_frames.py)
+on a seeded stratified sample of the validation split (73 REAL + 146 FAKE),
+using the training-time sequence construction. Full numbers, per-threshold
+breakdowns, the overfitting assessment and known limitations are in
+[evaluation/EVALUATION.md](evaluation/EVALUATION.md).
+
+| Model | Val ROC-AUC | Bal. Acc @0.5 | Recall @0.75 | FNR @0.75 |
+|-------|-------------|----------------|--------------|------------|
+| V1 (10-frame) | 0.670 | 0.590 | 0.153 | 0.847 |
+| V2 (32-frame) | 0.603 | 0.551 | 0.007 | 0.993 |
+
+> **⚠️ Honest reading:** the shipped checkpoints generalize weakly on this
+> split. The 0.75 deployment threshold strongly suppresses false alarms but
+> misses most manipulated videos. Treat outputs as **research-grade
+> indications, not forensic proof**, and see the limitations section of
+> `evaluation/EVALUATION.md` before drawing conclusions.
+
 ### Decision Threshold
 - **Threshold:** 0.75 (tunable in `app.py` and `test_version2.py`)
 - **Score > 0.75:** Classified as **FAKE**
 - **Score ≤ 0.75:** Classified as **REAL**
+- Metrics are always reported at **both** 0.5 (model-native) and 0.75
+  (deployment) so numbers are never ambiguous.
 
 ### Metrics Reported (V2)
 | Metric | Description |
@@ -524,7 +612,8 @@ git push
 | **Windows Used** | Number of ensemble predictions made |
 
 ### Qualitative Results
-The XAI heatmaps consistently highlight regions where GAN-based manipulations are most visible:
+The XAI heatmaps highlight regions the model reacted to (note: LIME explains a
+single replicated frame, not the temporal pathway):
 - **Unnatural skin smoothing** around cheeks and forehead
 - **Misaligned facial boundaries** near the jawline
 - **Inconsistent eye reflections** and iris details
@@ -588,5 +677,5 @@ This project was developed as an **academic research initiative** in the domain 
 
 <p align="center">
   <b>🎓 DeepFake Detection – Academic Research Project 🎓</b><br>
-  <a href="https://huggingface.co/spaces/TalhaQureshi324/Deep-Fake-Detection">🚀 Try the Live Demo</a>
+  <a href="https://huggingface.co/spaces/MuhammadTalha121/Deep-Fake-Detection">🚀 Try the Live Demo</a>
 </p>
