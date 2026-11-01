@@ -1,0 +1,36 @@
+# Trained model checkpoints (distributed via Hugging Face Space / Git LFS, not git)
+*.keras
+*.h5
+models_store/
+
+# OpenCV DNN face detector files (auto-downloaded at runtime)
+models/deploy.prototxt
+models/res10_300x300_ssd_iter_140000.caffemodel
+deploy.prototxt
+res10_300x300_ssd_iter_140000.caffemodel
+
+# Datasets and heavy artifacts
+data/
+processed_dataset/
+preprocessed_new/
+Dataset/
+
+# Runtime output folders
+testing/
+temp_frames/
+temp_runtime_frames/
+temp_runtime_frames_v2/
+xai_outputs/
+xai_outputs_v2/
+temp_runtime/
+evaluation/eval_run.log
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db

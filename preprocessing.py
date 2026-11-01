@@ -29,19 +29,86 @@ import argparse
 from pathlib import Path
 import json
 import random
+import urllib.request
 
 
 # ============================== CONFIG ==============================
 
+# Repo root = folder containing this file. All default paths are resolved
+# relative to it so the pipeline runs unchanged on any machine.
+REPO_ROOT = Path(__file__).resolve().parent
+
+# Optional environment overrides (set these to relocate data/models):
+#   FYP_DATA_DIR, FYP_PROCESSED_DIR, FYP_MODELS_DIR
+PROTOTXT_FILENAME = "deploy.prototxt"
+CAFFEMODEL_FILENAME = "res10_300x300_ssd_iter_140000.caffemodel"
+
+PROTOTXT_URL = (
+    "https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/deploy.prototxt"
+)
+CAFFEMODEL_URL = (
+    "https://github.com/opencv/opencv_3rdparty/raw/dnn_samples_face_detector_20170830/"
+    "res10_300x300_ssd_iter_140000.caffemodel"
+)
+
+
+def _env_path(env_var: str, default: Path) -> str:
+    return os.environ.get(env_var, str(default))
+
+
+def _find_face_detector_file(filename: str) -> Path | None:
+    """Locate a face-detector file in the repo, models/ dir, or env-provided dir."""
+    candidates = []
+    env_dir = os.environ.get("FYP_MODELS_DIR")
+    if env_dir:
+        candidates.append(Path(env_dir) / filename)
+    candidates.append(REPO_ROOT / filename)
+    candidates.append(REPO_ROOT / "models" / filename)
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _download_face_detector_file(url: str, destination: Path) -> None:
+    """Download an OpenCV DNN face-detector file if it is missing."""
+    if destination.is_file() and destination.stat().st_size > 0:
+        return
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    print(f"[preprocessing] Downloading {destination.name} ...")
+    urllib.request.urlretrieve(url, destination)
+    size = destination.stat().st_size
+    if destination.suffix == ".prototxt" and size > 1_000_000:
+        raise RuntimeError(f"Downloaded {destination} looks invalid ({size} bytes).")
+    if destination.suffix == ".caffemodel" and size < 1_000_000:
+        raise RuntimeError(f"Downloaded {destination} looks invalid ({size} bytes).")
+    print(f"[preprocessing] Saved {destination.name} ({size} bytes).")
+
+
+def resolve_face_detector_paths() -> tuple[str, str]:
+    """Locate the face-detector files, downloading them if missing (called lazily)."""
+    prototxt = _find_face_detector_file(PROTOTXT_FILENAME)
+    caffemodel = _find_face_detector_file(CAFFEMODEL_FILENAME)
+    if prototxt is None or caffemodel is None:
+        target_dir = REPO_ROOT / "models"
+        if prototxt is None:
+            prototxt = target_dir / PROTOTXT_FILENAME
+            _download_face_detector_file(PROTOTXT_URL, prototxt)
+        if caffemodel is None:
+            caffemodel = target_dir / CAFFEMODEL_FILENAME
+            _download_face_detector_file(CAFFEMODEL_URL, caffemodel)
+    return str(prototxt), str(caffemodel)
+
+
 DEFAULT_CONFIG = {
-    # Paths
-    "base_data_dir": r"D:\Computer Vision\FYP\data",
-    "output_dir": r"D:\Computer Vision\FYP\processed_dataset",
-    "model_dir": r"D:\Computer Vision\FYP\models",
-    
-    # Face Detection (OpenCV DNN)
-    "prototxt_path": r"D:\Computer Vision\FYP\models\deploy.prototxt",
-    "caffemodel_path": r"D:\Computer Vision\FYP\models\res10_300x300_ssd_iter_140000.caffemodel",
+    # Paths (portable defaults; override via env vars or a config JSON)
+    "base_data_dir": _env_path("FYP_DATA_DIR", REPO_ROOT / "data"),
+    "output_dir": _env_path("FYP_PROCESSED_DIR", REPO_ROOT / "processed_dataset"),
+    "model_dir": _env_path("FYP_MODELS_DIR", REPO_ROOT / "models"),
+
+    # Face Detection (OpenCV DNN) — resolved lazily by FaceExtractor
+    "prototxt_path": str(_find_face_detector_file(PROTOTXT_FILENAME) or REPO_ROOT / "models" / PROTOTXT_FILENAME),
+    "caffemodel_path": str(_find_face_detector_file(CAFFEMODEL_FILENAME) or REPO_ROOT / "models" / CAFFEMODEL_FILENAME),
     "confidence_threshold": 0.5,
     
     # Face Processing
@@ -72,6 +139,12 @@ class FaceExtractor:
     
     def __init__(self, config=None):
         self.config = config or DEFAULT_CONFIG
+        # Ensure detector files exist (downloads them into models/ if missing)
+        resolved_prototxt, resolved_caffemodel = resolve_face_detector_paths()
+        if not os.path.exists(self.config.get("prototxt_path", "")):
+            self.config["prototxt_path"] = resolved_prototxt
+        if not os.path.exists(self.config.get("caffemodel_path", "")):
+            self.config["caffemodel_path"] = resolved_caffemodel
         self.face_net = self._load_face_detector()
         
     def _load_face_detector(self):
