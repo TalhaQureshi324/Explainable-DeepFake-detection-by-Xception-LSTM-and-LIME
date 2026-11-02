@@ -24,6 +24,8 @@ xai_outputs/
 xai_outputs_v2/
 temp_runtime/
 evaluation/eval_run.log
+backend/.jobs/
+training/runs/
 
 # Python
 __pycache__/
