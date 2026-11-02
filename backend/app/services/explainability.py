@@ -34,7 +34,7 @@ def lime_available() -> bool:
 
 
 def generate_lime_heatmap(model, num_frames: int, frames_rgb, work_dir: Path,
-                          num_samples: int = 80) -> Optional[dict]:
+                          num_samples: int | None = None) -> Optional[dict]:
     """Return {"artifact_id", "png_path", "image_size"} or raise on failure."""
     if not lime_available():
         raise RuntimeError("lime / scikit-image are not installed")
@@ -42,6 +42,9 @@ def generate_lime_heatmap(model, num_frames: int, frames_rgb, work_dir: Path,
     from lime import lime_image
     from skimage.segmentation import mark_boundaries
     from PIL import Image
+
+    if num_samples is None:
+        num_samples = int(os.environ.get("DEEPFAKE_LIME_SAMPLES", "80"))
 
     normalized = [f.astype(np.float32) / 255.0 for f in frames_rgb]
     padded = normalized[:]

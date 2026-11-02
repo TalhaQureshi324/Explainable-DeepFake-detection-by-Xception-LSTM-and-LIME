@@ -89,6 +89,26 @@ Rules encoded in the contract:
 Structured report document (see `docs/REPORT_SCHEMA.md`). `409` until the
 analysis is `COMPLETED`.
 
+### `GET /v1/analyses/{id}/report.pdf`
+Server-rendered PDF (Phase 3) of the SAME structured report document — it never
+re-runs the model and never recomputes values.
+
+- Response: `application/pdf`, `Content-Disposition: attachment;
+  filename="deepfake_report_<id8>.pdf"`.
+- First request renders and caches the PDF under `DEEPFAKE_ARTIFACTS_DIR`
+  (`report_<id>.pdf`); repeat downloads serve the cached bytes unchanged.
+- States: `404` unknown analysis, `409` failed/not-completed, `500` generic
+  generation failure (internal details are logged server-side, never returned).
+- Content: title/ID/date, executive summary (score, threshold + version, model
+  version), media metadata table, prediction analysis, video timeline chart
+  (real timestamps), processed-face + LIME images with the LIME limitation,
+  technical details (checkpoint SHA-256, sequence length, preprocessing),
+  interpretation, warnings, and the full research-limitations list. Page
+  numbers and the uncalibrated-score disclaimer on every page.
+- Limitation (until Phase 4): generated PDFs and analysis records live in
+  memory/artifacts dir; a backend restart invalidates both. Uploaded media is
+  still deleted as soon as the analysis finishes.
+
 ### `GET /v1/artifacts/{artifact_id}`
 Serves analysis artifacts as PNG (processed-face preview, LIME heatmap).
 Artifact IDs are strict `[A-Za-z0-9_]{4,64}` tokens generated server-side; the

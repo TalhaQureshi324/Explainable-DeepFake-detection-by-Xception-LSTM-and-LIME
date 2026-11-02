@@ -83,6 +83,36 @@ export function getReport(analysisId: string): Promise<ReportData> {
   return requestJson<ReportData>(`/v1/analyses/${encodeURIComponent(analysisId)}/report`);
 }
 
+/**
+ * Download the server-rendered PDF for a completed analysis.
+ * The backend renders from the SAME structured report document as the JSON
+ * endpoint, so numbers can never diverge between web and PDF.
+ */
+export async function downloadReportPdf(analysisId: string): Promise<void> {
+  const res = await fetch(
+    `${API_BASE}/v1/analyses/${encodeURIComponent(analysisId)}/report.pdf`,
+  );
+  if (!res.ok) {
+    let detail = res.statusText;
+    try {
+      const body = await res.json();
+      detail = body?.detail ?? detail;
+    } catch {
+      /* non-JSON error body */
+    }
+    throw new ApiError(res.status, detail);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `deepfake_report_${analysisId.slice(0, 8)}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
 /** Artifacts (face preview / LIME PNGs) also flow through the proxy. */
 export function artifactUrl(relativePath: string | null | undefined): string | null {
   if (!relativePath) return null;

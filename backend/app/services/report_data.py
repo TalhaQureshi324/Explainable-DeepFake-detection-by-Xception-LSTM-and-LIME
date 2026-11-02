@@ -94,6 +94,7 @@ def build_report(analysis: dict) -> dict:
             "threshold": prediction.get("threshold"),
         },
         "explainability": analysis.get("explainability") or {},
+        "artifacts": analysis.get("artifacts") or {},
         "technical": {
             "model": model,
             "frames_analyzed": media.get("frames_analyzed"),

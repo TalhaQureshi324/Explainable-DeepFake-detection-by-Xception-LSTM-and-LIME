@@ -163,6 +163,10 @@ export interface ReportData {
     threshold: number | null;
   };
   explainability: ExplainabilityInfo | Record<string, unknown>;
+  artifacts: {
+    processed_face: string | null;
+    lime: string | null;
+  } | Record<string, unknown>;
   technical: {
     model: ModelInfo | Record<string, unknown>;
     frames_analyzed: number | null;

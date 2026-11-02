@@ -17,6 +17,7 @@ from app.schemas.analysis import (
     AnalysisCreateAccepted, AnalysisResponse, HealthResponse, ModelsResponse, ReadyResponse,
 )
 from app.services import model_registry as registry_module
+from app.services.pdf_report import build_pdf, pdf_filename
 from app.services.report_data import build_report
 from app.workers.analysis_worker import AnalysisWorker
 
@@ -152,5 +153,36 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
         if job.get("status") != "COMPLETED":
             raise HTTPException(status_code=409, detail="Analysis is not completed yet.")
         return build_report(_public_record(job))
+
+    @router.get("/v1/analyses/{analysis_id}/report.pdf")
+    def get_report_pdf(analysis_id: str):
+        """Server-side PDF rendering of the SAME structured report document the
+        JSON endpoint returns. Never re-runs the model."""
+        job = store.get(analysis_id)
+        if job is None:
+            raise HTTPException(status_code=404, detail="Analysis not found.")
+        if job.get("status") == "FAILED":
+            raise HTTPException(status_code=409, detail="Analysis failed; no report is available.")
+        if job.get("status") != "COMPLETED":
+            raise HTTPException(status_code=409, detail="Analysis is not completed yet.")
+        settings = get_settings()
+        artifacts_dir = Path(settings.artifacts_dir).resolve()
+        cache = artifacts_dir / f"report_{analysis_id}.pdf"
+        try:
+            if cache.is_file():
+                data = cache.read_bytes()
+            else:
+                data = build_pdf(build_report(_public_record(job)), artifacts_dir)
+                cache.write_bytes(data)
+        except HTTPException:
+            raise
+        except Exception:  # noqa: BLE001 - never leak internals
+            logger.exception("PDF generation failed for %s", analysis_id)
+            raise HTTPException(status_code=500, detail="PDF generation failed; please retry.")
+        return Response(
+            content=data,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{pdf_filename(analysis_id)}"'},
+        )
 
     return router

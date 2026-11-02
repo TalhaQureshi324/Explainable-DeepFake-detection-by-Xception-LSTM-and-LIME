@@ -54,6 +54,11 @@ populated only with genuine measured values; missing data is `null`.
                   "does NOT prove manipulation and does not explain the LSTM pathway."
   },
 
+  "artifacts": {                    // relative backend URLs (added in Phase 3)
+    "processed_face": "/v1/artifacts/face_<id>",
+    "lime": "/v1/artifacts/xai_<id> | null"
+  },
+
   "technical": {
     "model": {"name": "Xception-LSTM", "version": "v2", "checkpoint_sha256": "…",
               "input_frames": 32, "input_size": 299},
@@ -77,3 +82,5 @@ Rules for Phase 3 rendering (web + PDF):
 4. The `limitations` list must appear in full in every rendered report/PDF.
 5. Missing charts/artifacts degrade gracefully (omit section + note), never
    silently, and never invalidate the base prediction.
+6. The server-rendered PDF (`report.pdf`) renders THIS document via
+   `backend/app/services/pdf_report.py` — one data source for web and PDF.

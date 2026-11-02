@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * Report preview (Phase 3 groundwork): renders the structured report document
- * from GET /v1/analyses/{id}/report. One source of truth — the future PDF must
- * show exactly these numbers. The PDF button is deliberately non-functional.
+ * Interactive analysis report (Phase 3): renders the structured report
+ * document from GET /v1/analyses/{id}/report. One source of truth — the
+ * server-rendered PDF must show exactly these numbers.
  */
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, Download, FileText } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { ApiError, artifactUrl, getReport } from "@/lib/api/client";
+import { ApiError, artifactUrl, downloadReportPdf, getReport } from "@/lib/api/client";
 import type { ReportData } from "@/lib/api/types";
 import { WindowsChart } from "@/components/analysis/windows-chart";
 import {
@@ -47,6 +47,30 @@ export default function ReportPage({ params }: { params: { id: string } }) {
   const { t } = useI18n();
   const [report, setReport] = useState<ReportData | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
+  const [pdfState, setPdfState] = useState<"idle" | "loading" | "error">("idle");
+  const [pdfError, setPdfError] = useState<string | null>(null);
+
+  const onDownloadPdf = async () => {
+    if (pdfState === "loading") return;
+    setPdfState("loading");
+    setPdfError(null);
+    try {
+      await downloadReportPdf(id);
+      setPdfState("idle");
+    } catch (e) {
+      const apiErr = e as ApiError;
+      setPdfError(
+        apiErr.status === 404
+          ? t.notFound
+          : apiErr.status === 409
+            ? t.noData
+            : apiErr.status === 500
+              ? "PDF generation failed on the backend. Please retry."
+              : apiErr.detail,
+      );
+      setPdfState("error");
+    }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -58,13 +82,17 @@ export default function ReportPage({ params }: { params: { id: string } }) {
     };
   }, [id]);
 
-  // Artifact ids are deterministic (face_<id[:20]>) and the LIME id comes from
-  // the analysis record via the report's explainability block.
+  // Prefer artifact URLs from the report document itself; fall back to the
+  // deterministic face-preview id for analyses made before Phase 3.
+  const artifacts = (report?.artifacts ?? {}) as {
+    processed_face?: string | null;
+    lime?: string | null;
+  };
   const faceUrl = artifactUrl(
-    `/v1/artifacts/face_${(report?.analysis_id ?? id).replace(/-/g, "").slice(0, 20)}`,
+    artifacts.processed_face ??
+      `/v1/artifacts/face_${(report?.analysis_id ?? id).replace(/-/g, "").slice(0, 20)}`,
   );
-  const limeId = (report?.explainability as { artifact_id?: string } | undefined)?.artifact_id;
-  const limeUrl = artifactUrl(limeId ? `/v1/artifacts/${limeId}` : null);
+  const limeUrl = artifactUrl(artifacts.lime ?? null);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -80,14 +108,24 @@ export default function ReportPage({ params }: { params: { id: string } }) {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">{t.reportTitle}</h1>
-        <div className="relative group">
-          <Button variant="secondary" size="sm" disabled aria-disabled="true">
-            <Download className="h-4 w-4" aria-hidden />
+        <div className="flex flex-col items-end gap-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onDownloadPdf}
+            disabled={pdfState === "loading"}
+            aria-busy={pdfState === "loading"}
+          >
+            {pdfState === "loading" ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : (
+              <Download className="h-4 w-4" aria-hidden />
+            )}
             {t.pdfButton}
           </Button>
-          <span className="pointer-events-none absolute -top-9 start-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-ink-1 px-2 py-1 text-[11px] text-surface-1 opacity-0 transition-opacity group-hover:opacity-100 rtl:translate-x-1/2">
-            {t.pdfDisabledNote}
-          </span>
+          {pdfState === "error" && pdfError ? (
+            <span className="text-[11px] text-verdict-fake">{pdfError}</span>
+          ) : null}
         </div>
       </div>
 
@@ -149,6 +187,32 @@ export default function ReportPage({ params }: { params: { id: string } }) {
             <Alert tone="info" className="mt-3">{t.uncalibrated}</Alert>
           </Section>
 
+          {/* Media information */}
+          <Section title={t.reportSectionMedia}>
+            <div className="grid gap-x-8 sm:grid-cols-2">
+              <div>
+                <Kv k="filename" v={String(report.media.filename ?? "—")} />
+                <Kv
+                  k="file size"
+                  v={
+                    report.media.size_bytes != null
+                      ? Number(report.media.size_bytes) >= 1048576
+                        ? `${(Number(report.media.size_bytes) / 1048576).toFixed(2)} MB`
+                        : `${(Number(report.media.size_bytes) / 1024).toFixed(1)} KB`
+                      : "—"
+                  }
+                />
+                <Kv k="resolution" v={report.media.width ? `${report.media.width}×${report.media.height}` : "—"} />
+              </div>
+              <div>
+                <Kv k="duration" v={report.media.duration_seconds != null ? `${Number(report.media.duration_seconds).toFixed(2)}s` : "—"} />
+                <Kv k="fps" v={String(report.media.fps ?? "—")} />
+                <Kv k="frames extracted / analyzed" v={`${report.media.frames_extracted ?? "—"} / ${report.media.frames_analyzed ?? "—"}`} />
+                <Kv k="sha256" v={`${String(report.media.sha256 ?? "—").slice(0, 32)}…`} />
+              </div>
+            </div>
+          </Section>
+
           {/* 4. Timeline */}
           {report.timeline.windows?.length > 0 ? (
             <Section title={t.reportSectionTimeline}>
@@ -208,6 +272,14 @@ export default function ReportPage({ params }: { params: { id: string } }) {
                 <Kv k="method" v={report.technical.prediction_method ?? "—"} />
                 <Kv k="duration" v={report.technical.processing_duration_seconds != null ? `${report.technical.processing_duration_seconds}s` : "—"} />
                 <Kv k="status" v={report.generated_from_status} />
+                <Kv
+                  k="sequence"
+                  v={`${(report.technical.model as { input_frames?: number })?.input_frames ?? "—"} × ${(report.technical.model as { input_size?: number })?.input_size ?? "—"} px`}
+                />
+                <Kv
+                  k="preprocessing"
+                  v="OpenCV DNN face detect → margin crop → 299×299 → elliptical mask → [0,1]"
+                />
               </div>
             </div>
           </Section>
