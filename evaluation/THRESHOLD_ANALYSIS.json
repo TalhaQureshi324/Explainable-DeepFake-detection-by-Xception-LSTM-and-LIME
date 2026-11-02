@@ -1,0 +1,305 @@
+{
+  "explicit_thresholds": [
+    0.5,
+    0.6,
+    0.75
+  ],
+  "note": "sigmoid scores are not calibrated probabilities",
+  "results": {
+    "V1 full-sequence (val, n=216)": {
+      "thresholds": [
+        {
+          "threshold": 0.5,
+          "accuracy": 0.6759259259259259,
+          "balanced_accuracy": 0.5902777777777778,
+          "precision": 0.7176470588235294,
+          "recall": 0.8472222222222222,
+          "specificity": 0.3333333333333333,
+          "f1": 0.7770700636942675,
+          "fpr": 0.6666666666666666,
+          "fnr": 0.1527777777777778,
+          "confusion_matrix": {
+            "tp": 122,
+            "fp": 48,
+            "fn": 22,
+            "tn": 24
+          }
+        },
+        {
+          "threshold": 0.6,
+          "accuracy": 0.6342592592592593,
+          "balanced_accuracy": 0.6423611111111112,
+          "precision": 0.7876106194690266,
+          "recall": 0.6180555555555556,
+          "specificity": 0.6666666666666666,
+          "f1": 0.6926070038910507,
+          "fpr": 0.3333333333333333,
+          "fnr": 0.3819444444444444,
+          "confusion_matrix": {
+            "tp": 89,
+            "fp": 24,
+            "fn": 55,
+            "tn": 48
+          }
+        },
+        {
+          "threshold": 0.75,
+          "accuracy": 0.42592592592592593,
+          "balanced_accuracy": 0.5625,
+          "precision": 0.9166666666666666,
+          "recall": 0.1527777777777778,
+          "specificity": 0.9722222222222222,
+          "f1": 0.2619047619047619,
+          "fpr": 0.027777777777777776,
+          "fnr": 0.8472222222222222,
+          "confusion_matrix": {
+            "tp": 22,
+            "fp": 2,
+            "fn": 122,
+            "tn": 70
+          }
+        }
+      ],
+      "best": {
+        "threshold": 0.6155,
+        "balanced_accuracy": 0.6631944444444444
+      }
+    },
+    "V2 full-sequence (val, n=219)": {
+      "thresholds": [
+        {
+          "threshold": 0.5,
+          "accuracy": 0.589041095890411,
+          "balanced_accuracy": 0.5513698630136986,
+          "precision": 0.7028985507246377,
+          "recall": 0.6643835616438356,
+          "specificity": 0.4383561643835616,
+          "f1": 0.6830985915492958,
+          "fpr": 0.5616438356164384,
+          "fnr": 0.3356164383561644,
+          "confusion_matrix": {
+            "tp": 97,
+            "fp": 41,
+            "fn": 49,
+            "tn": 32
+          }
+        },
+        {
+          "threshold": 0.6,
+          "accuracy": 0.4611872146118721,
+          "balanced_accuracy": 0.5684931506849316,
+          "precision": 0.8181818181818182,
+          "recall": 0.2465753424657534,
+          "specificity": 0.8904109589041096,
+          "f1": 0.37894736842105264,
+          "fpr": 0.1095890410958904,
+          "fnr": 0.7534246575342466,
+          "confusion_matrix": {
+            "tp": 36,
+            "fp": 8,
+            "fn": 110,
+            "tn": 65
+          }
+        },
+        {
+          "threshold": 0.75,
+          "accuracy": 0.3378995433789954,
+          "balanced_accuracy": 0.5034246575342466,
+          "precision": 1.0,
+          "recall": 0.00684931506849315,
+          "specificity": 1.0,
+          "f1": 0.013605442176870748,
+          "fpr": 0.0,
+          "fnr": 0.9931506849315068,
+          "confusion_matrix": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 145,
+            "tn": 73
+          }
+        }
+      ],
+      "best": {
+        "threshold": 0.5353,
+        "balanced_accuracy": 0.5924657534246576
+      }
+    },
+    "V1 full-sequence (train sample, n=80)": {
+      "thresholds": [
+        {
+          "threshold": 0.5,
+          "accuracy": 0.7375,
+          "balanced_accuracy": 0.7375,
+          "precision": 0.6938775510204082,
+          "recall": 0.85,
+          "specificity": 0.625,
+          "f1": 0.7640449438202247,
+          "fpr": 0.375,
+          "fnr": 0.15,
+          "confusion_matrix": {
+            "tp": 34,
+            "fp": 15,
+            "fn": 6,
+            "tn": 25
+          }
+        },
+        {
+          "threshold": 0.6,
+          "accuracy": 0.7375,
+          "balanced_accuracy": 0.7375,
+          "precision": 0.8275862068965517,
+          "recall": 0.6,
+          "specificity": 0.875,
+          "f1": 0.6956521739130435,
+          "fpr": 0.125,
+          "fnr": 0.4,
+          "confusion_matrix": {
+            "tp": 24,
+            "fp": 5,
+            "fn": 16,
+            "tn": 35
+          }
+        },
+        {
+          "threshold": 0.75,
+          "accuracy": 0.55,
+          "balanced_accuracy": 0.5499999999999999,
+          "precision": 0.75,
+          "recall": 0.15,
+          "specificity": 0.95,
+          "f1": 0.24999999999999997,
+          "fpr": 0.05,
+          "fnr": 0.85,
+          "confusion_matrix": {
+            "tp": 6,
+            "fp": 2,
+            "fn": 34,
+            "tn": 38
+          }
+        }
+      ],
+      "best": {
+        "threshold": 0.5458,
+        "balanced_accuracy": 0.8
+      }
+    },
+    "V2 full-sequence (train sample, n=80)": {
+      "thresholds": [
+        {
+          "threshold": 0.5,
+          "accuracy": 0.6,
+          "balanced_accuracy": 0.6,
+          "precision": 0.6052631578947368,
+          "recall": 0.575,
+          "specificity": 0.625,
+          "f1": 0.5897435897435896,
+          "fpr": 0.375,
+          "fnr": 0.425,
+          "confusion_matrix": {
+            "tp": 23,
+            "fp": 15,
+            "fn": 17,
+            "tn": 25
+          }
+        },
+        {
+          "threshold": 0.6,
+          "accuracy": 0.5625,
+          "balanced_accuracy": 0.5625,
+          "precision": 0.6666666666666666,
+          "recall": 0.25,
+          "specificity": 0.875,
+          "f1": 0.36363636363636365,
+          "fpr": 0.125,
+          "fnr": 0.75,
+          "confusion_matrix": {
+            "tp": 10,
+            "fp": 5,
+            "fn": 30,
+            "tn": 35
+          }
+        },
+        {
+          "threshold": 0.75,
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "specificity": 1.0,
+          "f1": 0.0,
+          "fpr": 0.0,
+          "fnr": 1.0,
+          "confusion_matrix": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 40,
+            "tn": 40
+          }
+        }
+      ],
+      "best": {
+        "threshold": 0.4523,
+        "balanced_accuracy": 0.65
+      }
+    },
+    "V2 ensemble (val sample)": {
+      "thresholds": [
+        {
+          "threshold": 0.5,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666666,
+          "precision": 0.6,
+          "recall": 1.0,
+          "specificity": 0.3333333333333333,
+          "f1": 0.7499999999999999,
+          "fpr": 0.6666666666666666,
+          "fnr": 0.0,
+          "confusion_matrix": {
+            "tp": 12,
+            "fp": 8,
+            "fn": 0,
+            "tn": 4
+          }
+        },
+        {
+          "threshold": 0.6,
+          "accuracy": 0.7083333333333334,
+          "balanced_accuracy": 0.7083333333333333,
+          "precision": 0.6470588235294118,
+          "recall": 0.9166666666666666,
+          "specificity": 0.5,
+          "f1": 0.7586206896551724,
+          "fpr": 0.5,
+          "fnr": 0.08333333333333333,
+          "confusion_matrix": {
+            "tp": 11,
+            "fp": 6,
+            "fn": 1,
+            "tn": 6
+          }
+        },
+        {
+          "threshold": 0.75,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "specificity": 1.0,
+          "f1": 0.5,
+          "fpr": 0.0,
+          "fnr": 0.6666666666666666,
+          "confusion_matrix": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 8,
+            "tn": 12
+          }
+        }
+      ],
+      "best": {
+        "threshold": 0.627,
+        "balanced_accuracy": 0.7916666666666666
+      }
+    }
+  }
+}

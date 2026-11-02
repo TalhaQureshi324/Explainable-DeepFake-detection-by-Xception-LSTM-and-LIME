@@ -1,0 +1,984 @@
+{
+  "generated_at_utc": "2026-11-02T05:00:41.289986+00:00",
+  "split": "val",
+  "decision_threshold": 0.75,
+  "videos": [
+    {
+      "video": "15__outside_talking_pan_laughing.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.180619,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.674044,
+        "abs_score_delta": 0.493425,
+        "seconds": 39.4,
+        "windows": 1,
+        "frames_extracted": 28,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.400034,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.58632,
+        "abs_score_delta": 0.186287,
+        "seconds": 167.0,
+        "windows": 5,
+        "window_scores": [
+          0.4851,
+          0.309,
+          0.3314,
+          0.4571,
+          0.4176
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24"
+        ],
+        "frames_extracted": 28,
+        "frames_used": 28
+      }
+    },
+    {
+      "video": "20_09__outside_talking_pan_laughing__MKEWB4SM.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.845023,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.719705,
+        "abs_score_delta": 0.125318,
+        "seconds": 21.6,
+        "windows": 1,
+        "frames_extracted": 30,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.638004,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.50772,
+        "abs_score_delta": 0.130284,
+        "seconds": 129.3,
+        "windows": 6,
+        "window_scores": [
+          0.7257,
+          0.6209,
+          0.5089,
+          0.4054,
+          0.858,
+          0.7091
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 30,
+        "frames_used": 30
+      }
+    },
+    {
+      "video": "09_13__kitchen_pan__21H6XSPE.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.777393,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.775327,
+        "abs_score_delta": 0.002066,
+        "seconds": 18.8,
+        "windows": 1,
+        "frames_extracted": 31,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.596523,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.542101,
+        "abs_score_delta": 0.054421,
+        "seconds": 110.6,
+        "windows": 6,
+        "window_scores": [
+          0.5434,
+          0.6907,
+          0.6418,
+          0.5916,
+          0.5137,
+          0.5979
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 31,
+        "frames_used": 31
+      }
+    },
+    {
+      "video": "04__outside_talking_pan_laughing.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.328625,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.570034,
+        "abs_score_delta": 0.241408,
+        "seconds": 23.3,
+        "windows": 1,
+        "frames_extracted": 30,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.333001,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.315902,
+        "abs_score_delta": 0.017098,
+        "seconds": 119.0,
+        "windows": 6,
+        "window_scores": [
+          0.3168,
+          0.57,
+          0.2764,
+          0.271,
+          0.2624,
+          0.3015
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 30,
+        "frames_used": 30
+      }
+    },
+    {
+      "video": "18_15__kitchen_pan__V5VHLCOW.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.766165,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.578989,
+        "abs_score_delta": 0.187176,
+        "seconds": 20.3,
+        "windows": 1,
+        "frames_extracted": 30,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.719378,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.381524,
+        "abs_score_delta": 0.337854,
+        "seconds": 95.0,
+        "windows": 6,
+        "window_scores": [
+          0.7411,
+          0.7204,
+          0.7028,
+          0.7036,
+          0.6666,
+          0.7818
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 30,
+        "frames_used": 30
+      }
+    },
+    {
+      "video": "02_01__exit_phone_room__YVGY8LOK.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.861936,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.523845,
+        "abs_score_delta": 0.338091,
+        "seconds": 13.3,
+        "windows": 1,
+        "frames_extracted": 30,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.777923,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.580205,
+        "abs_score_delta": 0.197718,
+        "seconds": 104.1,
+        "windows": 6,
+        "window_scores": [
+          0.7685,
+          0.8213,
+          0.8331,
+          0.7517,
+          0.8108,
+          0.6821
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 30,
+        "frames_used": 30
+      }
+    },
+    {
+      "video": "26_18__exit_phone_room__AI94QW74.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.689714,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.634695,
+        "abs_score_delta": 0.05502,
+        "seconds": 13.0,
+        "windows": 1,
+        "frames_extracted": 27,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.686773,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.578157,
+        "abs_score_delta": 0.108617,
+        "seconds": 86.8,
+        "windows": 5,
+        "window_scores": [
+          0.6359,
+          0.716,
+          0.6974,
+          0.7143,
+          0.6704
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24"
+        ],
+        "frames_extracted": 27,
+        "frames_used": 27
+      }
+    },
+    {
+      "video": "12_14__podium_speech_happy__Z7EWFA0P.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.798352,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.655453,
+        "abs_score_delta": 0.1429,
+        "seconds": 22.0,
+        "windows": 1,
+        "frames_extracted": 29,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.627041,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.452393,
+        "abs_score_delta": 0.174648,
+        "seconds": 99.4,
+        "windows": 5,
+        "window_scores": [
+          0.6444,
+          0.5531,
+          0.4393,
+          0.7275,
+          0.7709
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24"
+        ],
+        "frames_extracted": 29,
+        "frames_used": 29
+      }
+    },
+    {
+      "video": "26_03__walking_outside_cafe_disgusted__WBSXBL82.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.872982,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.642661,
+        "abs_score_delta": 0.230322,
+        "seconds": 18.5,
+        "windows": 1,
+        "frames_extracted": 31,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.767292,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.605746,
+        "abs_score_delta": 0.161546,
+        "seconds": 112.8,
+        "windows": 6,
+        "window_scores": [
+          0.7221,
+          0.7814,
+          0.7826,
+          0.8007,
+          0.6978,
+          0.8192
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 31,
+        "frames_used": 31
+      }
+    },
+    {
+      "video": "02__kitchen_still.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.395274,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.399124,
+        "abs_score_delta": 0.00385,
+        "seconds": 21.3,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.670429,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.550462,
+        "abs_score_delta": 0.119967,
+        "seconds": 114.3,
+        "windows": 6,
+        "window_scores": [
+          0.6845,
+          0.5765,
+          0.5703,
+          0.8667,
+          0.5942,
+          0.7304
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "02__meeting_serious.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.843703,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.444373,
+        "abs_score_delta": 0.39933,
+        "seconds": 22.1,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.74354,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.553944,
+        "abs_score_delta": 0.189597,
+        "seconds": 129.2,
+        "windows": 6,
+        "window_scores": [
+          0.8129,
+          0.7771,
+          0.8811,
+          0.6983,
+          0.6141,
+          0.6778
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "27_25__outside_talking_still_laughing__1KU29EUL.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.879474,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.477076,
+        "abs_score_delta": 0.402397,
+        "seconds": 21.3,
+        "windows": 1,
+        "frames_extracted": 28,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.761963,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.599386,
+        "abs_score_delta": 0.162576,
+        "seconds": 106.2,
+        "windows": 5,
+        "window_scores": [
+          0.8521,
+          0.7895,
+          0.6953,
+          0.6888,
+          0.7842
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24"
+        ],
+        "frames_extracted": 28,
+        "frames_used": 28
+      }
+    },
+    {
+      "video": "23_10__walk_down_hall_angry__GYY4VANY.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.779798,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.582758,
+        "abs_score_delta": 0.19704,
+        "seconds": 17.7,
+        "windows": 1,
+        "frames_extracted": 31,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.839338,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.412469,
+        "abs_score_delta": 0.42687,
+        "seconds": 101.7,
+        "windows": 6,
+        "window_scores": [
+          0.8393,
+          0.8363,
+          0.8098,
+          0.8654,
+          0.8441,
+          0.8412
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 31,
+        "frames_used": 31
+      }
+    },
+    {
+      "video": "07_21__talking_against_wall__MKU99DVX.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.522832,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.537219,
+        "abs_score_delta": 0.014387,
+        "seconds": 23.6,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.628429,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.65945,
+        "abs_score_delta": 0.031021,
+        "seconds": 117.0,
+        "windows": 6,
+        "window_scores": [
+          0.6482,
+          0.5731,
+          0.8144,
+          0.551,
+          0.6172,
+          0.5666
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "02__exit_phone_room.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.864743,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.421754,
+        "abs_score_delta": 0.44299,
+        "seconds": 13.9,
+        "windows": 1,
+        "frames_extracted": 21,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.71781,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.545705,
+        "abs_score_delta": 0.172105,
+        "seconds": 84.1,
+        "windows": 4,
+        "window_scores": [
+          0.503,
+          0.8199,
+          0.8371,
+          0.7113
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19"
+        ],
+        "frames_extracted": 21,
+        "frames_used": 21
+      }
+    },
+    {
+      "video": "13__walk_down_hall_angry.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.142237,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.603258,
+        "abs_score_delta": 0.461021,
+        "seconds": 17.6,
+        "windows": 1,
+        "frames_extracted": 23,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.517616,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.554815,
+        "abs_score_delta": 0.037198,
+        "seconds": 87.0,
+        "windows": 4,
+        "window_scores": [
+          0.4806,
+          0.5142,
+          0.5253,
+          0.5504
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19"
+        ],
+        "frames_extracted": 23,
+        "frames_used": 23
+      }
+    },
+    {
+      "video": "09_13__podium_speech_happy__8YDMHH02.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.566542,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.683983,
+        "abs_score_delta": 0.117441,
+        "seconds": 24.0,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.637074,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.594049,
+        "abs_score_delta": 0.043025,
+        "seconds": 124.4,
+        "windows": 6,
+        "window_scores": [
+          0.6394,
+          0.6967,
+          0.6876,
+          0.4944,
+          0.6358,
+          0.6686
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "06__hugging_happy.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.159301,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.603472,
+        "abs_score_delta": 0.444171,
+        "seconds": 20.1,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.479846,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.411296,
+        "abs_score_delta": 0.06855,
+        "seconds": 120.1,
+        "windows": 6,
+        "window_scores": [
+          0.5114,
+          0.4316,
+          0.4207,
+          0.4549,
+          0.67,
+          0.3905
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "12__walking_and_outside_surprised.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.59279,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.715996,
+        "abs_score_delta": 0.123206,
+        "seconds": 24.1,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.520736,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.573919,
+        "abs_score_delta": 0.053183,
+        "seconds": 122.3,
+        "windows": 6,
+        "window_scores": [
+          0.4566,
+          0.4669,
+          0.6392,
+          0.488,
+          0.4582,
+          0.6156
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "21__talking_angry_couch.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.344815,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.498302,
+        "abs_score_delta": 0.153486,
+        "seconds": 29.7,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.289803,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.461807,
+        "abs_score_delta": 0.172004,
+        "seconds": 129.1,
+        "windows": 6,
+        "window_scores": [
+          0.2999,
+          0.2193,
+          0.226,
+          0.3391,
+          0.2614,
+          0.3932
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    },
+    {
+      "video": "01__walk_down_hall_angry.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.181034,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.438518,
+        "abs_score_delta": 0.257484,
+        "seconds": 16.5,
+        "windows": 1,
+        "frames_extracted": 19,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.64615,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.571036,
+        "abs_score_delta": 0.075114,
+        "seconds": 56.7,
+        "windows": 3,
+        "window_scores": [
+          0.3779,
+          0.7758,
+          0.7848
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14"
+        ],
+        "frames_extracted": 19,
+        "frames_used": 19
+      }
+    },
+    {
+      "video": "09_25__outside_talking_pan_laughing__ODAQ7BZL.mp4",
+      "true_label": "FAKE",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.896599,
+        "e2e_verdict@0.75": "FAKE",
+        "reference_score_from_processed_frames": 0.778107,
+        "abs_score_delta": 0.118492,
+        "seconds": 17.0,
+        "windows": 1,
+        "frames_extracted": 18,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.72315,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.634938,
+        "abs_score_delta": 0.088212,
+        "seconds": 58.8,
+        "windows": 3,
+        "window_scores": [
+          0.6751,
+          0.7717,
+          0.7227
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14"
+        ],
+        "frames_extracted": 18,
+        "frames_used": 18
+      }
+    },
+    {
+      "video": "07__walking_down_street_outside_angry.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.353364,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.380124,
+        "abs_score_delta": 0.02676,
+        "seconds": 20.3,
+        "windows": 1,
+        "frames_extracted": 22,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.602785,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.490848,
+        "abs_score_delta": 0.111937,
+        "seconds": 75.4,
+        "windows": 4,
+        "window_scores": [
+          0.6875,
+          0.5955,
+          0.5008,
+          0.6273
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19"
+        ],
+        "frames_extracted": 22,
+        "frames_used": 22
+      }
+    },
+    {
+      "video": "06__talking_against_wall.mp4",
+      "true_label": "REAL",
+      "V1": {
+        "status": "ok",
+        "e2e_score": 0.217014,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.359174,
+        "abs_score_delta": 0.14216,
+        "seconds": 23.9,
+        "windows": 1,
+        "frames_extracted": 32,
+        "frames_used": 10
+      },
+      "V2": {
+        "status": "ok",
+        "e2e_score": 0.609016,
+        "e2e_verdict@0.75": "REAL",
+        "reference_score_from_processed_frames": 0.439375,
+        "abs_score_delta": 0.169642,
+        "seconds": 123.5,
+        "windows": 6,
+        "window_scores": [
+          0.6673,
+          0.6159,
+          0.537,
+          0.6003,
+          0.6004,
+          0.6332
+        ],
+        "window_labels": [
+          "Full-32",
+          "Win-0-9",
+          "Win-5-14",
+          "Win-10-19",
+          "Win-15-24",
+          "Win-20-29"
+        ],
+        "frames_extracted": 32,
+        "frames_used": 32
+      }
+    }
+  ],
+  "all_passed": true
+}
