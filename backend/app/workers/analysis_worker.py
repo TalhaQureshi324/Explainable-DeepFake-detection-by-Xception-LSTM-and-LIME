@@ -211,7 +211,14 @@ class AnalysisWorker:
         artifacts_dir.mkdir(parents=True, exist_ok=True)
         preview_id = f"face_{analysis_id.replace('-', '')[:20]}"
         try:
-            middle = faces["frames"][len(faces["frames"]) // 2]
+            # The preview must be the SAME representative frame the LIME
+            # explanation targets: the middle of the PADDED sequence (last
+            # frame repeated to the model's input length).
+            num_frames = entry.input_frames or 32
+            padded = list(faces["frames"])
+            while len(padded) < num_frames:
+                padded.append(padded[-1].copy())
+            middle = padded[num_frames // 2]
             Image.fromarray(middle).save(artifacts_dir / f"{preview_id}.png")
         except Exception as exc:  # noqa: BLE001
             preview_id = None

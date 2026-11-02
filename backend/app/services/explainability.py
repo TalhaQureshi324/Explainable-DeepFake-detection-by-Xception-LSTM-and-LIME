@@ -71,7 +71,9 @@ def generate_lime_heatmap(model, num_frames: int, frames_rgb, work_dir: Path,
     )
     out_img = (mark_boundaries(temp, mask) * 255).astype(np.uint8)
 
-    xai_dir = Path(work_dir) / "artifacts"
+    # `work_dir` IS the artifacts directory (the worker passes it explicitly);
+    # appending another segment here would hide the file from the serving route.
+    xai_dir = Path(work_dir)
     xai_dir.mkdir(parents=True, exist_ok=True)
     artifact_id = "xai_" + os.urandom(6).hex()
     png_path = xai_dir / f"{artifact_id}.png"

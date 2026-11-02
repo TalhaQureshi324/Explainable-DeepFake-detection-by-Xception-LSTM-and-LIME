@@ -26,7 +26,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import (
-    BaseDocTemplate, Frame, HRFlowable, Image as RLImage, PageTemplate,
+    BaseDocTemplate, Frame, HRFlowable, Image as RLImage, KeepTogether, PageTemplate,
     Paragraph, Spacer, Table, TableStyle,
 )
 
@@ -290,14 +290,16 @@ def build_pdf(report: dict, artifacts_dir: Path) -> bytes:
     # ---- timeline chart (videos with windows) ----
     chart_png = _timeline_chart(report)
     if chart_png:
-        story += _section_heading("4. Video prediction timeline")
         img = RLImage(io.BytesIO(chart_png), width=170 * mm, height=61 * mm)
-        story.append(img)
-        story.append(Spacer(1, 2))
-        story.append(Paragraph(
-            "Window scores are plotted against the source video timeline using fps and "
-            "frame indices captured during face extraction. The dashed line marks the "
-            "active decision threshold.", S["muted"]))
+        story.append(KeepTogether([
+            *_section_heading("4. Video prediction timeline"),
+            img,
+            Spacer(1, 2),
+            Paragraph(
+                "Window scores are plotted against the source video timeline using fps and "
+                "frame indices captured during face extraction. The dashed line marks the "
+                "active decision threshold.", S["muted"]),
+        ]))
 
     # ---- visual evidence ----
     face_id = lime_id = None
