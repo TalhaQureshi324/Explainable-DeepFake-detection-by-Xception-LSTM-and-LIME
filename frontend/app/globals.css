@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --surface-1: 255 255 255;
+  --surface-2: 246 248 250;
+  --surface-3: 237 241 245;
+  --ink-1: 15 23 42;
+  --ink-2: 71 85 105;
+  --ink-3: 100 116 139;
+  --line: 226 232 240;
+  --accent: 8 145 178;
+  --accent-soft: 207 240 250;
+  --verdict-real: 22 163 74;
+  --verdict-fake: 225 29 72;
+}
+
+.dark {
+  --surface-1: 2 6 23;
+  --surface-2: 15 23 42;
+  --surface-3: 30 41 59;
+  --ink-1: 241 245 249;
+  --ink-2: 148 163 184;
+  --ink-3: 100 116 139;
+  --line: 51 65 85;
+  --accent: 34 211 238;
+  --accent-soft: 8 47 60;
+  --verdict-real: 74 222 128;
+  --verdict-fake: 251 113 133;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: rgb(var(--surface-2));
+  color: rgb(var(--ink-1));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Urdu: Noto Nastaliq Urdu (loaded in layout) with relaxed line height */
+html[dir="rtl"] body {
+  font-family: "Noto Nastaliq Urdu", var(--font-sans), system-ui, sans-serif;
+  line-height: 2.1;
+}
+
+::selection {
+  background: rgb(var(--accent) / 0.25);
+}

@@ -1,0 +1,256 @@
+/**
+ * Bilingual dictionary (English / Urdu). Components reference keys, never raw
+ * strings, so the UI is translatable and RTL-safe. Urdu translations follow the
+ * terminology already used by the deployed Gradio app.
+ */
+
+export type Locale = "en" | "ur";
+
+const en = {
+  siteName: "DeepFake Forensics",
+  tagline: "Explainable deepfake detection research platform",
+  navHome: "Home",
+  navAnalyze: "Analyze Media",
+  languageLabel: "Language",
+  themeLabel: "Theme",
+  themeLight: "Light",
+  themeDark: "Dark",
+
+  homeBadge: "Research prototype",
+  homeTitle: "Detect manipulated media with explainable AI",
+  homeSubtitle:
+    "A spatiotemporal Xception-LSTM pipeline analyzes faces frame by frame, models temporal consistency, and explains its decisions with LIME visualizations.",
+  homeCta: "Analyze Media",
+  homeSecondaryCta: "How it works",
+  disclaimerShort:
+    "Research prototype: model accuracy is still under evaluation. Scores are uncalibrated model outputs, not proof of manipulation or authenticity.",
+  disclaimerTitle: "Before you rely on any result",
+  disclaimerLong:
+    "This platform runs genuine model inference, but the current checkpoints are research-grade: they were evaluated as weak on held-out data, and their sigmoid scores are not calibrated probabilities. Treat every assessment as a machine-learning indication that requires human review — never as forensic evidence.",
+  archTitle: "How the analysis works",
+  archSteps: [
+    {
+      title: "Face extraction",
+      body: "OpenCV's DNN detector finds the most confident face per sampled frame; an elliptical mask removes background noise.",
+    },
+    {
+      title: "Temporal modeling",
+      body: "Xception extracts spatial features per frame; an LSTM models consistency across the sequence to capture temporal artifacts.",
+    },
+    {
+      title: "Decision",
+      body: "The model outputs a raw fake score. A configurable decision threshold maps it to REAL or FAKE — the active threshold is always shown with results.",
+    },
+    {
+      title: "Explainability",
+      body: "LIME highlights which regions of the representative frame influenced the decision. It explains a single replicated frame, not the temporal pathway.",
+    },
+  ],
+  pipelineTitle: "Honest limitations, by design",
+  pipelineBody:
+    "Results state the exact model version, checkpoint hash, decision threshold and prediction method used. Images are analyzed through a replicated-frame compatibility mode of the video model. See the model limitations page in the repository for measured performance.",
+  footerNote:
+    "Built for academic research on explainable deepfake detection. Not a forensic tool.",
+
+  uploadTitle: "Analyze media",
+  uploadSubtitle:
+    "Upload a video or image containing a face. Analysis runs on the real inference backend.",
+  dropHere: "Drag & drop a video or image here",
+  dropOr: "or",
+  browseFiles: "Browse files",
+  dropFormats: "Videos: MP4, AVI, MOV, MKV, WEBM · Images: JPG, PNG, BMP, WEBP",
+  dropLimits: (mb: number) => `Maximum file size: ${mb} MB`,
+  explainToggle: "Generate LIME explanation (slower)",
+  explainHint: "Adds ~30-90s of processing and produces a heatmap artifact.",
+  modelLabel: "Model version",
+  analyzeButton: "Analyze",
+  analyzing: "Uploading…",
+  selectedFile: "Selected file",
+  tooLarge: (mb: number) => `File exceeds the ${mb} MB upload limit.`,
+  badType: "Unsupported file type. Use MP4, AVI, MOV, MKV, WEBM, JPG, PNG, BMP or WEBP.",
+  emptyFile: "That file is empty.",
+  uploadFailed: "Upload failed",
+  backendDown: "Cannot reach the inference backend. Start it with: uvicorn backend.app.main:app --port 8000",
+
+  statusTitle: "Processing",
+  statusQueued: "Queued",
+  statusPreprocessing: "Extracting faces",
+  statusInferencing: "Running model inference",
+  statusExplaining: "Generating explanation",
+  statusReport: "Preparing report data",
+  statusCompleted: "Completed",
+  statusFailed: "Failed",
+  statusNote: "Live backend states — no simulated progress is shown.",
+
+  resultsTitle: "Analysis result",
+  verdictFake: "FAKE",
+  verdictReal: "REAL",
+  fakeScore: "Raw fake score",
+  threshold: "Decision threshold",
+  thresholdVersion: "Threshold version",
+  modelVersion: "Model version",
+  method: "Prediction method",
+  methodFull: "Full-sequence score",
+  methodEnsemble: "Sliding-window ensemble",
+  methodReplicated: "Replicated-frame compatibility mode",
+  uncalibrated: "Uncalibrated score — this is a raw model output, not a probability.",
+  imageCompatWarning:
+    "Images are analyzed by replicating one face crop across the video model's frame axis. This is a compatibility mode, not a validated image classifier.",
+  processingTime: "Processing time",
+  warnings: "Warnings",
+  openReport: "Open detailed report",
+  analyzeAnother: "Analyze another file",
+  timelineTitle: "Window scores across the video timeline",
+  timelineEmpty: "Window scores are available for video analyses.",
+  timelineNote: "Scores are placed on the real timeline using fps captured during extraction.",
+  facePreview: "Processed face",
+  limeTitle: "LIME explanation",
+  limeLimitation:
+    "LIME highlights regions of a single replicated frame that influenced the model. It does not prove those pixels were manipulated and does not explain the temporal pathway.",
+  failedTitle: "Analysis failed",
+  retry: "Try again",
+  backHome: "Back to home",
+  notFound: "Analysis not found. The backend may have restarted — Phase 1 keeps jobs in memory only.",
+  timeout: "The analysis took too long. Please retry.",
+
+  reportTitle: "Analysis report",
+  reportSectionOverview: "Analysis overview",
+  reportSectionPrediction: "Prediction summary",
+  reportSectionMedia: "Media information",
+  reportSectionTimeline: "Score timeline",
+  reportSectionFace: "Processed facial image",
+  reportSectionLime: "LIME explanation",
+  reportSectionTechnical: "Model & threshold information",
+  reportSectionLimits: "Warnings & limitations",
+  reportInterpretation: "Interpretation",
+  pdfButton: "Download PDF",
+  pdfDisabledNote: "PDF export arrives in Phase 3.",
+  analysisId: "Analysis ID",
+  created: "Created",
+  noData: "No data available for this section yet.",
+} ;
+
+const ur: typeof en = {
+  siteName: "ڈیپ فیک فارنزکس",
+  tagline: "وضاحتی ڈیپ فیک ڈیٹیکشن ریسرچ پلیٹ فارم",
+  navHome: "ہوم",
+  navAnalyze: "میڈیا تجزیہ",
+  languageLabel: "زبان",
+  themeLabel: "تھیم",
+  themeLight: "روشن",
+  themeDark: "تاریک",
+
+  homeBadge: "تحقیقی پروٹو ٹائپ",
+  homeTitle: "وضاحتی AI کے ساتھ جعلی میڈیا کی شناخت کریں",
+  homeSubtitle:
+    "Xception-LSTM پائپ لائن چہرے کو فریم بہ فریم تجزیہ کرتی ہے، عارضی تسلسل کو پرکھتی ہے، اور LIME بصری وضاحت کے ساتھ فیصلے واضح کرتی ہے۔",
+  homeCta: "میڈیا تجزیہ کریں",
+  homeSecondaryCta: "طریقہ کار",
+  disclaimerShort:
+    "تحقیقی پروٹو ٹائپ: ماڈل کی درستگی ابھی جانچ کے مراحل میں ہے۔ اسکور غیر کیلیبریٹڈ ماڈل آؤٹ پٹ ہیں، جعلی یا اصل ہونے کا ثبوت نہیں۔",
+  disclaimerTitle: "نتیجے پر بھروسہ کرنے سے پہلے",
+  disclaimerLong:
+    "یہ پلیٹ فارم حقیقی ماڈل انفرنس چلاتی ہے، لیکن موجودہ ماڈل تحقیقی درجے کے ہیں: ان کی کارکردگی ہولڈ آؤٹ ڈیٹا پر کمزور پائی گئی اور ان کے اسکور کیلیبریٹڈ امکانات نہیں ہیں۔ ہر نتیجے کو انسانی جائزے سے گذرنا چاہیے — یہ عدالتی ثبوت نہیں ہے۔",
+  archTitle: "تجزیہ کیسے ہوتا ہے",
+  archSteps: [
+    {
+      title: "چہرہ نکالنا",
+      body: "OpenCV DNN ڈیٹیکٹر ہر منتخب فریم پر سب سے واضح چہرہ تلاش کرتا ہے؛ بیضوی ماسک پس منظر کی شور کو ختم کرتا ہے۔",
+    },
+    {
+      title: "عارضی ماڈلنگ",
+      body: "Xception ہر فریم کی خلاصہ خصوصیات نکالتا ہے؛ LSTM تسلسل کے درمیان مطابقت پرکھ کر عارضی اسنپ متلف کرتا ہے۔",
+    },
+    {
+      title: "فیصلہ",
+      body: "ماڈل ایک خام فیک اسکور دیتا ہے۔ قابلِ ترتیب فیصلہ حد اسے REAL یا FAKE میں بدلتی ہے — فعال حد ہر نتیجے کے ساتھ دکھائی جاتی ہے۔",
+    },
+    {
+      title: "وضاحت",
+      body: "LIME نمایاں کرتا ہے کہ نمائندہ فریم کے کون سے حصے نے فیصلے پر اثر ڈالا۔ یہ ایک نقل شدہ فریم وضاحت کرتا ہے، عارضی راستہ نہیں۔",
+    },
+  ],
+  pipelineTitle: "محدودیت کا صاف اظہار",
+  pipelineBody:
+    "ہر نتیجے میں ماڈل ورژن، چیک پوائنٹ ہیش، فیصلہ حد اور طریقہ کار شامل ہوتا ہے۔ تصاویر ویڈیو ماڈل کی نقل شدہ فریم موڈ سے تجزیہ ہوتی ہیں۔ پیمائش شدہ کارکردگی کے لیے ریپوزٹوری کا MODEL_LIMITATIONS صفحہ دیکھیں۔",
+  footerNote: "وضاحتی ڈیپ فیک ڈیٹیکشن پر اکیڈمک تحقیق کے لیے بنایا گیا۔ عدالتی آلہ نہیں۔",
+
+  uploadTitle: "میڈیا تجزیہ",
+  uploadSubtitle: "چہرے والی ویڈیو یا تصویر اپ لوڈ کریں۔ تجزیہ حقیقی انفرنس بیک اینڈ پر ہوتا ہے۔",
+  dropHere: "ویڈیو یا تصویر یہاں ڈراپ کریں",
+  dropOr: "یا",
+  browseFiles: "فائل منتخب کریں",
+  dropFormats: "ویڈیو: MP4, AVI, MOV, MKV, WEBM · تصاویر: JPG, PNG, BMP, WEBP",
+  dropLimits: (mb: number) => `زیادہ سے زیادہ سائز: ${mb} MB`,
+  explainToggle: "LIME وضاحت تیار کریں (آہستہ)",
+  explainHint: "تقریباً 30-90 سیکنڈ اضافی وقت اور ہیٹ میپ فائل بناتی ہے۔",
+  modelLabel: "ماڈل ورژن",
+  analyzeButton: "تجزیہ کریں",
+  analyzing: "اپ لوڈ ہو رہی ہے…",
+  selectedFile: "منتخب فائل",
+  tooLarge: (mb: number) => `فائل ${mb} MB کی حد سے زیادہ ہے۔`,
+  badType: "غیر تعاون یافتہ قسم۔ MP4, AVI, MOV, MKV, WEBM, JPG, PNG, BMP یا WEBP استعمال کریں۔",
+  emptyFile: "فائل خالی ہے۔",
+  uploadFailed: "اپ لوڈ ناکام",
+  backendDown: "انفرنس بیک اینڈ تک رسائی نہیں۔ یہ چلائیں: uvicorn backend.app.main:app --port 8000",
+
+  statusTitle: "پروسیسنگ",
+  statusQueued: "قطار میں",
+  statusPreprocessing: "چہرے نکالے جا رہے ہیں",
+  statusInferencing: "ماڈل انفرنس جاری ہے",
+  statusExplaining: "وضاحت بن رہی ہے",
+  statusReport: "رپورٹ ڈیٹا تیار ہو رہا ہے",
+  statusCompleted: "مکمل",
+  statusFailed: "ناکام",
+  statusNote: "براہ راست بیک اینڈ اسٹیٹس — کوئی فرضی پیش رفت نہیں دکھائی جاتی۔",
+
+  resultsTitle: "تجزیہ نتیجہ",
+  verdictFake: "جعلی",
+  verdictReal: "اصلی",
+  fakeScore: "خام فیک اسکور",
+  threshold: "فیصلہ حد",
+  thresholdVersion: "حد کا ورژن",
+  modelVersion: "ماڈل ورژن",
+  method: "پیشن گوئی کا طریقہ",
+  methodFull: "مکمل سیکوئنس اسکور",
+  methodEnsemble: "سلائیڈنگ ونڈو انسیمبل",
+  methodReplicated: "نقل شدہ فریم موڈ",
+  uncalibrated: "غیر کیلیبریٹڈ اسکور — یہ خام ماڈل آؤٹ پٹ ہے، امکانات نہیں۔",
+  imageCompatWarning:
+    "تصاویر ویڈیو ماڈل کے فریم محور پر ایک چہرے کی نقل سے تجزیہ ہوتی ہیں۔ یہ موڈ ہے، تصدیق شدہ امیج کلاسیفائر نہیں۔",
+  processingTime: "پروسیسنگ وقت",
+  warnings: "اطلاعات",
+  openReport: "تفصیلی رپورٹ کھولیں",
+  analyzeAnother: "مزید فائل تجزیہ کریں",
+  timelineTitle: "ویڈیو ٹائم لائن پر ونڈو اسکور",
+  timelineEmpty: "ونڈو اسکور صرف ویڈیو تجزیے کے لیے ہوتے ہیں۔",
+  timelineNote: "اسکور نکالنے کے دوران محفوظ fps کی مدد سے اصل ٹائم لائن پر رکھے گئے ہیں۔",
+  facePreview: "پروسیس شدہ چہرہ",
+  limeTitle: "LIME وضاحت",
+  limeLimitation:
+    "LIME ایک نقل شدہ فریم کے ان حصوں کو نمایاں کرتا ہے جنھوں نے ماڈل پر اثر ڈالا۔ یہ ثابت نہیں کرتا کہ وہ پکسلز جعلی ہیں اور عارضی راستے کی وضاحت نہیں کرتا۔",
+  failedTitle: "تجزیہ ناکام",
+  retry: "دوبارہ کوشش",
+  backHome: "ہوم پر جائیں",
+  notFound: "تجزیہ نہیں ملا۔ بیک اینڈ دوبارہ شروع ہوا ہوگا — Phase 1 میں جابز صرف میموری میں ہیں۔",
+  timeout: "تجزیے میں بہت وقت لگا۔ دوبارہ کوشش کریں۔",
+
+  reportTitle: "تجزیہ رپورٹ",
+  reportSectionOverview: "تجزیہ جائزہ",
+  reportSectionPrediction: "پیشن گوئی کا خلاصہ",
+  reportSectionMedia: "میڈیا معلومات",
+  reportSectionTimeline: "اسکور ٹائم لائن",
+  reportSectionFace: "پروسیس شدہ چہرہ",
+  reportSectionLime: "LIME وضاحت",
+  reportSectionTechnical: "ماڈل اور حد کی معلومات",
+  reportSectionLimits: "اطلاعات اور محدودیت",
+  reportInterpretation: "تشریح",
+  pdfButton: "PDF ڈاؤن لوڈ",
+  pdfDisabledNote: "PDF ایکسپورٹ Phase 3 میں آئے گا۔",
+  analysisId: "تجزیہ آئی ڈی",
+  created: "تاریخ",
+  noData: "اس حصے کا ڈیٹا ابھی موجود نہیں۔",
+};
+
+export const dictionaries = { en, ur } as const;
+export type Dictionary = typeof en;

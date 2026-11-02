@@ -36,3 +36,4 @@ venv/
 # OS / editor
 .DS_Store
 Thumbs.db
+.artifacts/
