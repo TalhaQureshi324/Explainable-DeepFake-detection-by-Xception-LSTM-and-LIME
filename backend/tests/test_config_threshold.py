@@ -2,6 +2,7 @@
 
 import importlib
 import sys
+from pathlib import Path
 
 from app.core.config import Settings
 
@@ -34,6 +35,6 @@ def test_invalid_override_falls_back(monkeypatch):
 
 
 def test_historical_threshold_is_preserved_in_docs():
-    repo_root = Settings().models_dir.parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
     text = (repo_root / "evaluation" / "EVALUATION.md").read_text(encoding="utf-8")
     assert "0.75" in text  # 0.75 remains recorded as the historical baseline
