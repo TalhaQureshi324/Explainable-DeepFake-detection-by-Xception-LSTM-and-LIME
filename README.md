@@ -319,6 +319,24 @@ Deep learning models are often criticized as "black boxes." To address this, we 
 
 ---
 
+## Application Backend & Retraining (Phase 1)
+
+The project is growing beyond the Gradio app:
+
+- **`backend/`** — FastAPI inference service over the same checkpoints: model registry
+  (SHA-256 + shape validated, loaded once), centralized configurable decision threshold
+  (env `DEEPFAKE_THRESHOLD`, dev default **0.60**, per-model overrides; historical 0.75 is
+  preserved in evaluation results only), async analysis jobs, structured JSON responses and
+  LIME on request. See `docs/API.md` (frontend integration contract) and `docs/ARCHITECTURE.md`.
+  Run: `uvicorn backend.app.main:app --port 8000` after `pip install -r backend/requirements.txt`.
+  Tests: `python -m pytest backend/tests`.
+- **`training/`** — corrected retraining pipeline: `make_identity_split.py` (scene/actor
+  leakage-controlled splits + auditable manifest), `train_corrected.py` (manifest-driven,
+  ImageNet-correct Xception normalization, ROC-AUC checkpointing), `COLAB_TRAINING.ipynb`
+  (GPU-ready), `TRAINING_NOTES.md` (why the original checkpoints are weak).
+- **`docs/`** — `PHASE_PROGRESS.md` (status tracker), `MODEL_LIMITATIONS.md` (read before
+  trusting outputs), `REPORT_SCHEMA.md`, `API.md`, `ARCHITECTURE.md`.
+
 ## Project Structure
 
 ```
