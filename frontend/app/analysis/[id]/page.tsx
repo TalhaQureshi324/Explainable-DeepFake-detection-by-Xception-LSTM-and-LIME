@@ -1,18 +1,19 @@
 "use client";
 
 /**
- * Analysis page (processing states): polls GET /v1/analyses/{id} and shows the
- * live backend state machine plus recoverable failure views. 404s (backend
- * restart loses in-memory jobs) are handled explicitly.
+ * Analysis page: polls GET /v1/analyses/{id} via useAnalysisPolling and shows
+ * either the live status timeline, the full results, or a recoverable failure.
+ * 404s (backend restart loses in-memory jobs) are handled explicitly.
  */
 
 import { use } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { errorCodeToMessageKey, useAnalysisPolling } from "@/lib/api/use-analysis";
 import { StatusTimeline } from "@/components/analysis/status-timeline";
-import { Alert, Badge, ButtonLink, Skeleton } from "@/components/ui/primitives";
+import { ResultView } from "@/components/analysis/result-view";
+import { Alert, ButtonLink, Skeleton } from "@/components/ui/primitives";
 
 export default function AnalysisPage({
   params,
@@ -38,16 +39,21 @@ export default function AnalysisPage({
         </span>
       </div>
 
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t.statusTitle}</h1>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">
+        {phase.kind === "done" && phase.analysis.status === "COMPLETED"
+          ? t.resultsTitle
+          : t.statusTitle}
+      </h1>
 
       {phase.kind === "loading" && (
-        <div className="mx-auto max-w-xl">
-          <Skeleton className="h-64" />
+        <div className="grid gap-4 sm:grid-cols-5">
+          <Skeleton className="h-72 sm:col-span-2" />
+          <Skeleton className="h-72 sm:col-span-3" />
         </div>
       )}
 
       {phase.kind === "error" && (
-        <Alert tone="danger">
+        <Alert tone="danger" title={phase.error.status === 404 ? t.notFound : t.uploadFailed}>
           {phase.error.status === 404
             ? t.notFound
             : phase.error.status === 504
@@ -60,21 +66,17 @@ export default function AnalysisPage({
 
       {phase.kind === "polling" && (
         <div className="mx-auto max-w-xl">
-          <StatusTimeline current={phase.analysis.status} />
+          <StatusTimeline
+            current={phase.analysis.status}
+            explainRequested={phase.analysis.explainability?.available ||
+              phase.analysis.explainability?.limitation !== null}
+          />
           <p className="mt-3 text-center text-xs text-ink-3">{t.statusNote}</p>
         </div>
       )}
 
       {phase.kind === "done" && phase.analysis.status === "COMPLETED" && (
-        <div className="mx-auto max-w-xl">
-          <p className="text-sm text-ink-2">
-            {t.resultsTitle}:{" "}
-            <Badge tone={phase.analysis.prediction?.label === "FAKE" ? "fake" : "real"}>
-              {phase.analysis.prediction?.label}
-            </Badge>{" "}
-            <span className="font-mono">{phase.analysis.prediction?.fake_score?.toFixed(4)}</span>
-          </p>
-        </div>
+        <ResultView analysis={phase.analysis} />
       )}
 
       {phase.kind === "done" && phase.analysis.status === "FAILED" && (
@@ -91,6 +93,7 @@ export default function AnalysisPage({
           />
           <div className="mt-6 flex justify-center gap-3">
             <ButtonLink href="/analyze" variant="secondary">
+              <RotateCcw className="h-4 w-4 rtl:rotate-180" aria-hidden />
               {t.retry}
             </ButtonLink>
             <ButtonLink href="/" variant="ghost">
