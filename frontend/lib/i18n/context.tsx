@@ -25,6 +25,11 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
 
   useEffect(() => {
+    const qp = new URLSearchParams(window.location.search).get("lang");
+    if (qp === "en" || qp === "ur") {
+      setLocaleState(qp);
+      return;
+    }
     const saved = window.localStorage.getItem(STORAGE_KEY) as Locale | null;
     if (saved === "en" || saved === "ur") setLocaleState(saved);
   }, []);

@@ -82,6 +82,7 @@ class Settings:
 
     max_upload_mb: int = field(default_factory=lambda: _env_int("DEEPFAKE_MAX_UPLOAD_MB", 200))
     jobs_dir: Path = field(default_factory=lambda: Path(os.environ.get("DEEPFAKE_JOBS_DIR", REPO_ROOT / "backend" / ".jobs")))
+    artifacts_dir: Path = field(default_factory=lambda: Path(os.environ.get("DEEPFAKE_ARTIFACTS_DIR", REPO_ROOT / "backend" / ".artifacts")))
     enable_xai_default: bool = field(default_factory=lambda: _env_bool("DEEPFAKE_ENABLE_XAI", False))
     max_workers: int = field(default_factory=lambda: _env_int("DEEPFAKE_MAX_WORKERS", 1))
 

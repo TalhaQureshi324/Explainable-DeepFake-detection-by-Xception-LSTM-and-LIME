@@ -66,6 +66,11 @@ class ExplainabilityInfo(BaseModel):
     limitation: Optional[str] = None
 
 
+class ArtifactsInfo(BaseModel):
+    processed_face: Optional[str] = None   # relative URL to the processed-face PNG
+    lime: Optional[str] = None             # relative URL to the LIME PNG (when requested)
+
+
 class AnalysisResponse(BaseModel):
     analysis_id: str
     status: str                                 # QUEUED..COMPLETED/FAILED
@@ -76,6 +81,7 @@ class AnalysisResponse(BaseModel):
     model: Optional[ModelInfo] = None
     processing: ProcessingInfo = ProcessingInfo()
     explainability: ExplainabilityInfo = ExplainabilityInfo()
+    artifacts: ArtifactsInfo = ArtifactsInfo()
     windows: List[WindowScoreOut] = Field(default_factory=list)
     report_available: bool = False
 

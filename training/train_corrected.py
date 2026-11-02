@@ -236,6 +236,9 @@ def main() -> None:
                         help="Checkpoint/early-stop metric (val_auc_curve|val_loss)")
     parser.add_argument("--patience", type=int, default=4)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--resume-from", default=None,
+                        help="Checkpoint to resume from (restores optimizer state); "
+                             "used after Colab disconnects")
     parser.add_argument("--max-train-videos", type=int, default=0,
                         help="Cap train videos (smoke tests); 0 = all")
     parser.add_argument("--max-val-videos", type=int, default=0)
@@ -267,7 +270,16 @@ def main() -> None:
     class_weights = gen_train.class_weights()
     print(f"[train] class weights: {class_weights}")
 
-    model = build_model(args.num_frames, args.backbone, args.lr)
+    initial_epoch = 0
+    if args.resume_from:
+        model = tf.keras.models.load_model(args.resume_from)  # restores optimizer state
+        old_log = out_dir / "training_log.csv"
+        if old_log.exists():
+            rows = [l for l in old_log.read_text(encoding="utf-8").strip().splitlines() if l.strip()]
+            initial_epoch = max(0, len(rows) - 1)
+        print(f"[train] resuming from {args.resume_from} at epoch {initial_epoch + 1}")
+    else:
+        model = build_model(args.num_frames, args.backbone, args.lr)
     monitor = args.selection_metric
     mode = "max" if "auc" in monitor.lower() else "min"
     callbacks = [
@@ -276,13 +288,15 @@ def main() -> None:
             save_best_only=True, verbose=1),
         tf.keras.callbacks.EarlyStopping(monitor=monitor, mode=mode,
                                          patience=args.patience, restore_best_weights=True),
-        tf.keras.callbacks.CSVLogger(str(out_dir / "training_log.csv")),
+        tf.keras.callbacks.CSVLogger(str(out_dir / "training_log.csv"),
+                                     append=bool(args.resume_from)),
     ]
 
     history = model.fit(
         gen_train.keras_sequence(),
         validation_data=gen_val.keras_sequence(),
         epochs=args.epochs,
+        initial_epoch=initial_epoch,
         callbacks=callbacks,
         class_weight=class_weights,
         verbose=2,
@@ -295,6 +309,8 @@ def main() -> None:
         "config": {k: getattr(args, k) for k in (
             "num_frames", "v1_first_k", "preprocessing_mode", "backbone", "epochs",
             "batch_size", "lr", "selection_metric", "patience", "seed")},
+        "resumed_from": args.resume_from,
+        "initial_epoch": initial_epoch,
         "data": {
             "manifest": args.manifest,
             "manifest_mode": manifest.get("mode"),

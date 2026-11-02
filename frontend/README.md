@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend — DeepFake Forensics (Phase 2)
 
-## Getting Started
+Next.js 14 (App Router) + TypeScript + Tailwind CSS + Recharts + Lucide.
+Talks to the FastAPI inference backend (`backend/`) over a same-origin proxy.
 
-First, run the development server:
+## Quick start (local end-to-end)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Backend (repo root) — put checkpoints in models_store/ or set DEEPFAKE_MODELS_DIR
+pip install -r backend/requirements.txt
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+
+# 2. Frontend (frontend/) — the proxy target is baked at BUILD time
+cd frontend
+npm install
+INFERENCE_API_URL=http://127.0.0.1:8000 npm run build   # proxy target for prod server
+npm run dev                                             # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> **Important:** Next.js bakes `rewrites()` into the build manifest, so
+> `INFERENCE_API_URL` must be set when BUILDING (`npm run build`), not just at
+> runtime. On Vercel, set `INFERENCE_API_URL` as a project environment
+> variable and redeploy — same mechanism, zero code changes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All frontend HTTP calls go to relative `/api/inference/:path*` routes which the
+config proxies to the backend, so there is no CORS and the deployed backend URL
+never reaches the browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Structure
 
-## Learn More
+```
+frontend/
+├── app/
+│   ├── page.tsx                    # Homepage: hero, disclaimer, architecture
+│   ├── analyze/page.tsx            # Upload: dropzone, validation, preview, model select
+│   ├── analysis/[id]/page.tsx      # Polling + live states + full results
+│   └── analysis/[id]/report/page.tsx  # Report preview (Phase 3 groundwork)
+├── components/
+│   ├── ui/primitives.tsx           # shadcn-style local primitives
+│   ├── site/chrome.tsx             # header (language/theme switches) + footer
+│   └── analysis/                   # status timeline, result view, windows chart
+└── lib/
+    ├── api/types.ts                # mirrors backend Pydantic schemas
+    ├── api/client.ts               # the ONLY fetch layer + polling
+    ├── api/use-analysis.ts         # polling hook + error-code mapping
+    ├── i18n/                       # EN/UR dictionaries + RTL provider
+    └── theme/provider.tsx          # light/dark provider (class strategy)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Behavior guarantees
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Only real backend states are rendered — no simulated progress percentages.
+- Scores are labelled **uncalibrated** everywhere they appear.
+- Image analyses display the replicated-frame compatibility warning.
+- `?lang=ur` / `?theme=dark` URL params override the persisted choice (handy
+  for demos and screenshots); otherwise choices persist in localStorage.
+- Backend restarts make Phase 1 in-memory jobs disappear; the analysis page
+  surfaces the 404 as an explanatory state instead of an error blob.
+- PDF button on the report page is intentionally disabled until Phase 3.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testing
 
-## Deploy on Vercel
+```bash
+npm run build     # type + lint + production build (must pass)
+npm run lint
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Backend contract tests: `python -m pytest backend/tests` (34 tests).
+End-to-end evidence with real media: `docs/E2E_EVIDENCE_PHASE2.md`.

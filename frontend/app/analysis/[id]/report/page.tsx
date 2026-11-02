@@ -6,7 +6,7 @@
  * show exactly these numbers. The PDF button is deliberately non-functional.
  */
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { ApiError, artifactUrl, getReport } from "@/lib/api/client";
@@ -42,8 +42,8 @@ function Kv({ k, v }: { k: string; v: React.ReactNode }) {
   );
 }
 
-export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ReportPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { t } = useI18n();
   const [report, setReport] = useState<ReportData | null>(null);
   const [error, setError] = useState<ApiError | null>(null);

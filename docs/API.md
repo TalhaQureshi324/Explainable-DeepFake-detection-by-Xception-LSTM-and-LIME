@@ -89,6 +89,19 @@ Rules encoded in the contract:
 Structured report document (see `docs/REPORT_SCHEMA.md`). `409` until the
 analysis is `COMPLETED`.
 
+### `GET /v1/artifacts/{artifact_id}`
+Serves analysis artifacts as PNG (processed-face preview, LIME heatmap).
+Artifact IDs are strict `[A-Za-z0-9_]{4,64}` tokens generated server-side; the
+path cannot traverse out of the artifacts directory. `404` for unknown/expired
+artifacts. Completed analyses expose the URLs in the additive
+`artifacts.processed_face` / `artifacts.lime` response fields. Artifacts
+persist in `DEEPFAKE_ARTIFACTS_DIR` (default `backend/.artifacts/`) after the
+job's temp directory is cleaned up; retention policy arrives with Phase 4.
+
+> Added in Phase 2 (smallest change needed for the Results/Report screens to
+> display real images); documented here per the master plan's backend-extension
+> rule.
+
 ## Frontend integration contract (Next.js, Phase 2)
 
 1. `POST /v1/analyses` with the media as multipart; store `analysis_id`.

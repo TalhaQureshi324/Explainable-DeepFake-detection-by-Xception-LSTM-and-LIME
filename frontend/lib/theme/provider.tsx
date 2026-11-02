@@ -18,6 +18,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
+    const qp = new URLSearchParams(window.location.search).get("theme");
+    if (qp === "light" || qp === "dark") {
+      setThemeState(qp);
+      return;
+    }
     const saved = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
     const initial: Theme =
       saved ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");

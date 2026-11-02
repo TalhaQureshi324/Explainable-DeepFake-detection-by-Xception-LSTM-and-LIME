@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 // Prevents a flash of the wrong theme before React hydrates.
-const themeScript = `(function(){try{var t=localStorage.getItem('df-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark')document.documentElement.classList.add('dark');var l=localStorage.getItem('df-locale');if(l==='ur'){document.documentElement.setAttribute('dir','rtl');document.documentElement.setAttribute('lang','ur');}}catch(e){}})();`;
+const themeScript = `(function(){try{var q=new URLSearchParams(location.search);var t=q.get('theme')||localStorage.getItem('df-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark')document.documentElement.classList.add('dark');var l=q.get('lang')||localStorage.getItem('df-locale');if(l==='ur'){document.documentElement.setAttribute('dir','rtl');document.documentElement.setAttribute('lang','ur');}}catch(e){}})();`;
 
 export default function RootLayout({
   children,

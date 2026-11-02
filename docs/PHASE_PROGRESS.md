@@ -5,9 +5,9 @@
 | Phase 0 | Baseline audit, model provenance, evaluation, honest metrics | ✅ DONE (merged to main) | `evaluation/EVALUATION.md`, `evaluation/model_manifest.json`, commits `735468a..8496d82` |
 | ML diagnostics | Training-folder truth, normalization, thresholds, ensemble-vs-full-seq | ✅ DONE (Phase 1 branch) | See "Diagnostic findings" below; `evaluation/THRESHOLD_ANALYSIS.md` |
 | Phase 1 | FastAPI backend, model registry, threshold config, tests | ✅ DONE (Phase 1 branch) | 33/33 tests pass; real-media smoke: API score matches direct reference (Δ 3.6e-07) |
-| Retraining prep (R1–R4) | Leakage-controlled split, corrected trainer, GPU notebook, investigation | ✅ PREPARED (GPU run pending — user provides Colab/Kaggle GPU) | `training/make_identity_split.py`, `training/train_corrected.py` (CPU smoke-tested), `training/COLAB_TRAINING.ipynb`, `training/TRAINING_NOTES.md` |
-| Phase 2 | Next.js frontend | not started | blocked only on nothing — can start next; API contract frozen in `docs/API.md` |
-| Phase 3 | Interactive report + PDF | not started | report data structure already implemented + documented (`docs/REPORT_SCHEMA.md`) |
+| Retraining prep (R1–R4) | Leakage-controlled split, corrected trainer, GPU notebook, investigation | ✅ PREPARED + PREFLIGHT-VERIFIED (GPU run pending — user runs `training/COLAB_TRAINING.ipynb`) | `training/make_identity_split.py`, `training/train_corrected.py` (CPU smoke-tested), `training/COLAB_TRAINING.ipynb`, `training/TRAINING_NOTES.md` |
+| Phase 2 | Next.js frontend | ✅ DONE (branch `phase-2-frontend`, merged to main) | `frontend/`; e2e with real image+video through the proxy: scores identical to direct API calls; 34 backend tests; screenshots in `docs/screenshots/`; evidence in `docs/E2E_EVIDENCE_PHASE2.md` |
+| Phase 3 | Interactive report + PDF | not started | report data structure implemented; report-preview UI already renders the full document (`frontend/app/analysis/[id]/report`) |
 | Phase 4 | Supabase history | not started | needs Supabase project (user) |
 | Phase 5 | Deployment hardening | not started | needs Vercel + hosting decision (user) |
 

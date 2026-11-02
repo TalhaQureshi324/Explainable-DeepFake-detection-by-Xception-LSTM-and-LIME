@@ -23,6 +23,8 @@ import shutil
 import threading
 import time
 import uuid
+
+from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Optional
@@ -172,6 +174,11 @@ class AnalysisWorker:
         else:
             result = inference_service.predict_image_compat(model, num_frames, faces["frames"][0])
 
+        self.store.update(analysis_id, media={
+            **(self.store.get(analysis_id).get("media") or {}),
+            "frames_analyzed": result.frames_used,
+        })
+
         threshold = self.registry.threshold_for_version(version)
         label = "FAKE" if result.fake_score > threshold else "REAL"
         self.store.update(analysis_id,
@@ -199,6 +206,17 @@ class AnalysisWorker:
         for warning in result.warnings:
             self.store.push_warning(analysis_id, warning)
 
+        # ---- artifacts: processed-face preview (always) ----------------
+        artifacts_dir = Path(self.settings.artifacts_dir)
+        artifacts_dir.mkdir(parents=True, exist_ok=True)
+        preview_id = f"face_{analysis_id.replace('-', '')[:20]}"
+        try:
+            middle = faces["frames"][len(faces["frames"]) // 2]
+            Image.fromarray(middle).save(artifacts_dir / f"{preview_id}.png")
+        except Exception as exc:  # noqa: BLE001
+            preview_id = None
+            logger.warning("Face preview artifact failed for %s: %s", analysis_id, exc)
+
         # ---- EXPLAINING (optional, failure-isolated) ------------------
         request_xai = bool(job.get("request_xai"))
         explainability = {"available": False, "method": None, "artifact_id": None,
@@ -212,7 +230,7 @@ class AnalysisWorker:
             else:
                 try:
                     artifact = generate_lime_heatmap(
-                        model, num_frames, faces["frames"], job_dir,
+                        model, num_frames, faces["frames"], artifacts_dir,
                     )
                     explainability = {
                         "available": True, "method": XAI_METHOD,
@@ -233,6 +251,11 @@ class AnalysisWorker:
                           processing={
                               "duration_seconds": round(time.time() - started, 3),
                               "warnings": self.store.get(analysis_id)["processing"].get("warnings", []),
+                          },
+                          artifacts={
+                              "processed_face": f"/v1/artifacts/{preview_id}" if preview_id else None,
+                              "lime": (f"/v1/artifacts/{explainability['artifact_id']}"
+                                        if explainability.get("artifact_id") else None),
                           },
                           report_available=True,
                           status="COMPLETED")

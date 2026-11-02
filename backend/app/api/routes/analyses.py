@@ -2,7 +2,10 @@
 
 import logging
 import os
+import re
 from pathlib import Path
+
+from fastapi import Response
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
@@ -124,6 +127,20 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
         if job is None:
             raise HTTPException(status_code=404, detail="Analysis not found.")
         return _record_to_response(job)
+
+    @router.get("/v1/artifacts/{artifact_id}")
+    def get_artifact(artifact_id: str):
+        """Serve analysis artifacts (processed-face preview / LIME PNG).
+
+        Artifact IDs are strict hex-prefixed tokens generated server-side, so
+        the path can never traverse outside the artifacts directory."""
+        if not re.fullmatch(r"[A-Za-z0-9_]{4,64}", artifact_id):
+            raise HTTPException(status_code=400, detail="Malformed artifact id.")
+        settings = get_settings()
+        candidate = (Path(settings.artifacts_dir) / f"{artifact_id}.png").resolve()
+        if candidate.parent != Path(settings.artifacts_dir).resolve() or not candidate.is_file():
+            raise HTTPException(status_code=404, detail="Artifact not found (or expired).")
+        return Response(content=candidate.read_bytes(), media_type="image/png")
 
     @router.get("/v1/analyses/{analysis_id}/report")
     def get_report(analysis_id: str):

@@ -6,7 +6,6 @@
  * 404s (backend restart loses in-memory jobs) are handled explicitly.
  */
 
-import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
@@ -18,9 +17,9 @@ import { Alert, ButtonLink, Skeleton } from "@/components/ui/primitives";
 export default function AnalysisPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = use(params);
+  const { id } = params;
   const { t } = useI18n();
   const phase = useAnalysisPolling(id);
 

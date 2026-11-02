@@ -118,3 +118,31 @@ def test_no_internal_path_leakage(client):
     assert "_job_dir" not in body
     assert "_stored_path" not in body
     assert "upload_" not in body
+
+
+def test_artifact_route_validation_and_serving(client, monkeypatch, tmp_path):
+    import os
+
+    from app.core.config import get_settings
+
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir()
+    monkeypatch.setenv("DEEPFAKE_ARTIFACTS_DIR", str(artifacts))
+    get_settings.cache_clear()
+
+    from PIL import Image
+
+    Image.new("RGB", (4, 4), (10, 200, 30)).save(artifacts / "face_deadbeef.png")
+
+    r = client.get("/v1/artifacts/face_deadbeef")
+    assert r.status_code == 200
+    assert r.headers["content-type"] == "image/png"
+
+    assert client.get("/v1/artifacts/face_deadbeef.png").status_code == 400      # extension rejected
+    # traversal attempts are normalized away by the HTTP layer or rejected:
+    assert client.get("/v1/artifacts/../jobs/evil").status_code in (400, 404)
+    assert client.get("/v1/artifacts/%2e%2e%2fjobs%2fevil").status_code in (400, 404)
+    assert client.get("/v1/artifacts/face_missing00").status_code == 404
+
+    get_settings.cache_clear()
+    os.environ.pop("DEEPFAKE_ARTIFACTS_DIR", None)
