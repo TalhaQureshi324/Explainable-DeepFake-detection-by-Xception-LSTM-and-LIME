@@ -177,3 +177,67 @@ export interface ReportData {
   interpretation: string;
   limitations: string[];
 }
+
+// ---- Phase 4: auth + history ----
+
+export interface AuthUser {
+  id: string;
+  email: string | null;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+  access_token?: string;
+}
+
+export interface MeResponse {
+  user: AuthUser | null;
+}
+
+export interface HistoryItem {
+  id: string;
+  status: string;
+  media_type: string;
+  filename: string;
+  label: string | null;
+  fake_score: number | null;
+  threshold?: number | null;
+  model_version?: string | null;
+  created_at: string;
+  error_code?: string | null;
+}
+
+export interface HistoryFilters {
+  label?: string;
+  media_type?: string;
+  status?: string;
+  date_from?: string;
+  date_to?: string;
+  search?: string;
+  cursor?: string;
+  limit?: number;
+}
+
+export interface HistoryResponse {
+  items: HistoryItem[];
+  next_cursor: string | null;
+}
+
+export interface HistoryStats {
+  total: number;
+  completed: number;
+  failed: number;
+  images: number;
+  videos: number;
+  fakes: number;
+  reals: number;
+  recent: Array<{
+    id: string;
+    status: string;
+    media_type: string;
+    filename: string;
+    label: string | null;
+    fake_score: number | null;
+    created_at: string;
+  }>;
+}

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Noto_Nastaliq_Urdu } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/i18n/context";
+import { AuthProvider } from "@/lib/auth/context";
 import { ThemeProvider } from "@/lib/theme/provider";
 import { SiteFooter, SiteHeader } from "@/components/site/chrome";
 
@@ -52,6 +53,7 @@ export default function RootLayout({
         style={{ ["--font-sans" as string]: "var(--font-inter)" }}
       >
         <ThemeProvider>
+          <AuthProvider>
           <LocaleProvider>
             <div className="flex min-h-screen flex-col">
               <SiteHeader />
@@ -59,6 +61,7 @@ export default function RootLayout({
               <SiteFooter />
             </div>
           </LocaleProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

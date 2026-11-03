@@ -10,7 +10,12 @@
 import type {
   AnalysisCreateAccepted,
   AnalysisResponse,
+  AuthResponse,
   HealthResponse,
+  HistoryFilters,
+  HistoryResponse,
+  HistoryStats,
+  MeResponse,
   ModelsResponse,
   ReportData,
   ReadyResponse,
@@ -155,4 +160,54 @@ export async function pollAnalysis(
     });
   }
   throw new ApiError(504, "Analysis timed out while polling the backend.");
+}
+
+// ---- Phase 4: auth + history (cookie session via the same-origin proxy) ----
+
+async function requestJsonAuth<T>(path: string, init?: RequestInit): Promise<T> {
+  return requestJson<T>(path, { credentials: "include", ...init });
+}
+
+export function register(email: string, password: string): Promise<AuthResponse> {
+  return requestJsonAuth<AuthResponse>("/v1/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export function login(email: string, password: string): Promise<AuthResponse> {
+  return requestJsonAuth<AuthResponse>("/v1/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export function logout(): Promise<{ ok: boolean }> {
+  return requestJsonAuth<{ ok: boolean }>("/v1/auth/logout", { method: "POST" });
+}
+
+export function me(): Promise<MeResponse> {
+  return requestJsonAuth<MeResponse>("/v1/auth/me");
+}
+
+export function getHistory(filters: HistoryFilters = {}): Promise<HistoryResponse> {
+  const q = new URLSearchParams();
+  for (const [k, v] of Object.entries(filters)) {
+    if (v) q.set(k, String(v));
+  }
+  const qs = q.toString();
+  return requestJsonAuth<HistoryResponse>(`/v1/history${qs ? `?${qs}` : ""}`);
+}
+
+export function getHistoryStats(): Promise<HistoryStats> {
+  return requestJsonAuth<HistoryStats>("/v1/history/stats");
+}
+
+export function deleteAnalysis(analysisId: string): Promise<{ deleted: boolean }> {
+  return requestJsonAuth<{ deleted: boolean }>(
+    `/v1/analyses/${encodeURIComponent(analysisId)}`,
+    { method: "DELETE" },
+  );
 }
