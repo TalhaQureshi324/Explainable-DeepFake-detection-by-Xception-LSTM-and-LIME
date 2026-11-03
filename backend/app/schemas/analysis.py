@@ -31,11 +31,11 @@ class MediaInfo(BaseModel):
 
 
 class PredictionOut(BaseModel):
-    label: str                                  # "REAL" | "FAKE"
-    fake_score: float
-    threshold: float
-    threshold_version: str
-    method: str                                 # full_sequence | sliding_window_ensemble | replicated_frame_sequence
+    label: str | None                           # "REAL" | "FAKE" (null while processing)
+    fake_score: float | None
+    threshold: float | None
+    threshold_version: str | None
+    method: str | None                          # full_sequence | sliding_window_ensemble | replicated_frame_sequence
     score_is_calibrated: bool = Field(
         default=False,
         description="Sigmoid outputs are NOT calibrated probabilities; "
@@ -44,8 +44,8 @@ class PredictionOut(BaseModel):
 
 
 class ModelInfo(BaseModel):
-    name: str = "Xception-LSTM"
-    version: str
+    name: str | None = "Xception-LSTM"
+    version: str | None
     description: Optional[str] = None
     checkpoint_sha256: Optional[str] = None
     input_frames: Optional[int] = None

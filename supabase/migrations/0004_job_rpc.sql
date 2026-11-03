@@ -17,13 +17,16 @@ begin
         updated_at = now()
     where id = (
       select id from analysis_jobs
-        where state = 'QUEUED' and run_after <= now()
+        where state = 'QUEUED' and run_after <= now() and attempts < max_attempts
         order by run_after
         for update skip locked
         limit 1
     )
     returning id, analysis_id, attempts, max_attempts into v_job;
   if v_job is null then
+    -- dead-letter exhausted queued jobs alongside claiming
+    update analysis_jobs set state = 'DEAD', updated_at = now()
+      where state = 'QUEUED' and attempts >= max_attempts;
     return;
   end if;
   return query select v_job.id, v_job.analysis_id, v_job.attempts, v_job.max_attempts;

@@ -41,3 +41,6 @@ e2e_test_media/
 backend_e2e.log
 frontend_e2e.log
 e2e_test_media/
+backend/.data/
+backend_p4*.log
+frontend_p4.log

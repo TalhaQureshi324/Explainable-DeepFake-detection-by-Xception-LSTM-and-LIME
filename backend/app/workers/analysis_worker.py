@@ -147,11 +147,19 @@ class AnalysisWorker:
     # ------------------------------------------------------- persistent path
 
     def _dispatcher_loop(self) -> None:
+        last_reclaim = 0.0
         while not self._stop.is_set():
             try:
                 job = self.repository.claim_job(self._worker_id, CLAIM_LEASE_SECONDS)
                 if not job:
-                    self._stop.wait(1.0)
+                    # periodic stall recovery: a worker that died mid-run leaves a
+                    # leased job behind; once the lease expires it must re-queue
+                    if time.time() - last_reclaim > 60:
+                        reclaimed = self.repository.reclaim_stalled_jobs()
+                        if reclaimed:
+                            logger.info("Reclaimed %d stalled job(s)", reclaimed)
+                        last_reclaim = time.time()
+                    self._stop.wait(2.0)
                     continue
                 self._pool.submit(self._run_persistent, job)
             except Exception:  # noqa: BLE001
@@ -206,6 +214,10 @@ class AnalysisWorker:
             record = self.repository.get_analysis_system(analysis_id)
             if record is None:
                 raise RuntimeError(f"Analysis {analysis_id} vanished from the repository")
+            # re-register in the hot store: status polling and _execute's store
+            # updates depend on it after a restart
+            self.store.create(analysis_id, self._strip(record))
+            record = self.store.get(analysis_id)
         filename = (record.get("media") or {}).get("filename", "upload")
         uploads_dir = Path(self.settings.jobs_dir) / "uploads" / analysis_id
         record["_stored_path"] = str(uploads_dir / ("upload_" + filename))

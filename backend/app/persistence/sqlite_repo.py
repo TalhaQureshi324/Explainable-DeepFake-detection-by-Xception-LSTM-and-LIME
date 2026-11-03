@@ -115,7 +115,7 @@ class SQLiteRepository:
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("pragma journal_mode=wal")
         self._conn.execute("pragma foreign_keys=on")
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()  # reentrant: update_analysis nests window/artifact writes
         with self._lock, self._conn:
             self._conn.executescript(_SCHEMA)
         self._secret_file = self.data_dir / "session_secret"
@@ -451,6 +451,10 @@ class SQLiteRepository:
         now = _now()
         lease_until = (datetime.now(timezone.utc) + timedelta(seconds=lease_seconds)).isoformat()
         with self._lock, self._conn:
+            # dead-letter exhausted jobs so they never claim again
+            self._conn.execute(
+                "update analysis_jobs set state='DEAD', updated_at=? "
+                "where state='QUEUED' and attempts >= max_attempts", (now,))
             row = self._conn.execute(
                 """select j.id, j.analysis_id, j.attempts, j.max_attempts from analysis_jobs j
                    where j.state='QUEUED' and j.run_after <= ?
