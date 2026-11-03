@@ -72,8 +72,8 @@ class FakeWorker:
     def queue_capacity(self):
         return 1
 
-    def submit(self, media_path, media_type, original_filename, requested_model=None,
-               request_xai=None):
+    def submit(self, media_path, media_type, original_filename, user=None,
+               requested_model=None, request_xai=None):
         import uuid
 
         analysis_id = str(uuid.uuid4())

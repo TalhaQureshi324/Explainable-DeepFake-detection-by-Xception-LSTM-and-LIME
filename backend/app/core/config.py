@@ -86,6 +86,12 @@ class Settings:
     enable_xai_default: bool = field(default_factory=lambda: _env_bool("DEEPFAKE_ENABLE_XAI", False))
     max_workers: int = field(default_factory=lambda: _env_int("DEEPFAKE_MAX_WORKERS", 1))
 
+    # ---- Phase 4: persistence / auth / storage / retention ----------------
+    supabase_url: str = os.environ.get("SUPABASE_URL", "")
+    supabase_service_key: str = os.environ.get("SUPABASE_SERVICE_KEY", "")
+    supabase_anon_key: str = os.environ.get("SUPABASE_ANON_KEY", "")
+    retention_days: int | None = field(default_factory=lambda: _env_int("RETENTION_DAYS", 0) or None)
+
     # Replicated-frame image inference is a compatibility mode (video model on
     # a single frame), never presented as a validated image classifier.
     image_inference_mode: str = "replicated_frame_sequence"

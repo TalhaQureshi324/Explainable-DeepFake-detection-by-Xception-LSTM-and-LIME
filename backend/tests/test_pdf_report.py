@@ -150,9 +150,10 @@ def test_pdf_states_are_rejected(pdf_client):
     assert r.status_code == 409
 
 
-def test_pdf_missing_analysis_404(pdf_client):
+def test_pdf_missing_analysis_denied(pdf_client):
     client, _store, _artifacts = pdf_client
-    assert client.get("/v1/analyses/nope/report.pdf").status_code == 404
+    # unauthenticated: denied without existence disclosure
+    assert client.get("/v1/analyses/nope/report.pdf").status_code == 401
 
 
 def test_report_document_includes_artifacts(pdf_client):

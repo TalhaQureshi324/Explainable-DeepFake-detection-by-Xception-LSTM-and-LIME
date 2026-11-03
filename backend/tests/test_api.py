@@ -103,12 +103,14 @@ def test_unknown_model_version_rejected(client):
     assert r.status_code == 400
 
 
-def test_analysis_404(client):
-    assert client.get("/v1/analyses/does-not-exist").status_code == 404
+def test_analysis_unknown_unauthenticated(client):
+    # unauthenticated access to any saved analysis is denied outright (401);
+    # existence is never revealed
+    assert client.get("/v1/analyses/does-not-exist").status_code == 401
 
 
-def test_report_404_and_409(client):
-    assert client.get("/v1/analyses/does-not-exist/report").status_code == 404
+def test_report_unknown_unauthenticated(client):
+    assert client.get("/v1/analyses/does-not-exist/report").status_code == 401
 
 
 def test_no_internal_path_leakage(client):

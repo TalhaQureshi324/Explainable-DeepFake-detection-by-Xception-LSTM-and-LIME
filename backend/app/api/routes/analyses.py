@@ -5,9 +5,9 @@ import os
 import re
 from pathlib import Path
 
-from fastapi import Response
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, Response
+from app.core.deps import get_current_user
 
 from app.core.config import (
     SUPPORTED_IMAGE_EXTENSIONS, SUPPORTED_VIDEO_EXTENSIONS, Settings, get_settings,
@@ -31,12 +31,23 @@ def _public_record(job: dict) -> dict:
     return {k: v for k, v in job.items() if not k.startswith("_")}
 
 
+def _strip_internal(record: dict) -> dict:
+    """Repository records -> API-shaped response dict."""
+    record = {k: v for k, v in record.items() if not k.startswith("_")}
+    record.setdefault("processing", {"warnings": []})
+    record.setdefault("explainability", {"available": False})
+    record.setdefault("artifacts", {"processed_face": None, "lime": None})
+    record.setdefault("windows", [])
+    return record
+
+
 def _record_to_response(job: dict) -> AnalysisResponse:
     return AnalysisResponse(**_public_record(job))
 
 
 def create_router(store: JobStore, registry: registry_module.ModelRegistry,
-                  worker: AnalysisWorker) -> APIRouter:
+                  worker: AnalysisWorker, settings: Settings = None,
+                  repository=None) -> APIRouter:
     router = APIRouter()
 
     # ---- health / readiness -------------------------------------------------
@@ -67,6 +78,7 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
         model_version: str = Form(default=None),
         explain: bool = Form(default=None),
         settings: Settings = Depends(get_settings),
+        user: dict | None = Depends(get_current_user),
     ):
         if worker.queue_capacity() <= 0:
             raise HTTPException(status_code=503, detail="Server is at capacity; retry shortly.")
@@ -115,7 +127,7 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
                 tmp_path.unlink(missing_ok=True)
                 raise HTTPException(status_code=400, detail=str(exc))
 
-        analysis_id = worker.submit(tmp_path, media_type, filename,
+        analysis_id = worker.submit(tmp_path, media_type, filename, user=user,
                                     requested_model=model_version, request_xai=explain)
         return AnalysisCreateAccepted(
             analysis_id=analysis_id, status="QUEUED",
@@ -123,11 +135,24 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
         )
 
     @router.get("/v1/analyses/{analysis_id}", response_model=AnalysisResponse)
-    def get_analysis(analysis_id: str):
+    def get_analysis(analysis_id: str,
+                     user: dict | None = Depends(get_current_user)):
         job = store.get(analysis_id)
-        if job is None:
+        if job is not None:
+            # hot cache: guests and the owner during processing; a persisted
+            # analysis is only readable by its owner
+            if job.get("user_id") and (not user or user["id"] != job["user_id"]):
+                raise HTTPException(status_code=404, detail="Analysis not found.")
+            return _record_to_response(job)
+        if repository is None:
             raise HTTPException(status_code=404, detail="Analysis not found.")
-        return _record_to_response(job)
+        if user is None:
+            raise HTTPException(status_code=401,
+                                detail="Sign in to access saved analyses.")
+        record = repository.get_analysis(analysis_id, user["id"])
+        if record is None:
+            raise HTTPException(status_code=404, detail="Analysis not found.")
+        return AnalysisResponse(**_strip_internal(record))
 
     @router.get("/v1/artifacts/{artifact_id}")
     def get_artifact(artifact_id: str):
@@ -143,24 +168,37 @@ def create_router(store: JobStore, registry: registry_module.ModelRegistry,
             raise HTTPException(status_code=404, detail="Artifact not found (or expired).")
         return Response(content=candidate.read_bytes(), media_type="image/png")
 
-    @router.get("/v1/analyses/{analysis_id}/report")
-    def get_report(analysis_id: str):
+    def _source_record(analysis_id: str, user):
+        """Hot cache first, then the repository (owner-only)."""
         job = store.get(analysis_id)
-        if job is None:
+        if job is not None:
+            if job.get("user_id") and (not user or user["id"] != job["user_id"]):
+                raise HTTPException(status_code=404, detail="Analysis not found.")
+            return _public_record(job)
+        if user is None:
+            raise HTTPException(status_code=401,
+                                detail="Sign in to access saved analyses.")
+        record = repository.get_analysis(analysis_id, user["id"]) if repository else None
+        if record is None:
             raise HTTPException(status_code=404, detail="Analysis not found.")
+        return _strip_internal(record)
+
+    @router.get("/v1/analyses/{analysis_id}/report")
+    def get_report(analysis_id: str,
+                   user: dict | None = Depends(get_current_user)):
+        job = _source_record(analysis_id, user)
         if job.get("status") == "FAILED":
             raise HTTPException(status_code=409, detail="Analysis failed; no report is available.")
         if job.get("status") != "COMPLETED":
             raise HTTPException(status_code=409, detail="Analysis is not completed yet.")
-        return build_report(_public_record(job))
+        return build_report(job)
 
     @router.get("/v1/analyses/{analysis_id}/report.pdf")
-    def get_report_pdf(analysis_id: str):
+    def get_report_pdf(analysis_id: str,
+                       user: dict | None = Depends(get_current_user)):
         """Server-side PDF rendering of the SAME structured report document the
         JSON endpoint returns. Never re-runs the model."""
-        job = store.get(analysis_id)
-        if job is None:
-            raise HTTPException(status_code=404, detail="Analysis not found.")
+        job = _source_record(analysis_id, user)
         if job.get("status") == "FAILED":
             raise HTTPException(status_code=409, detail="Analysis failed; no report is available.")
         if job.get("status") != "COMPLETED":

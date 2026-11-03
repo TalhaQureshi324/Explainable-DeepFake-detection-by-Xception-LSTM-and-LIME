@@ -22,9 +22,12 @@ if str(REPO_ROOT / "backend") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "backend"))
 
 from .api.routes.analyses import create_router  # noqa: E402
+from .api.routes.auth_history import create_router as create_auth_history_router  # noqa: E402
 from .core.config import Settings, get_settings  # noqa: E402
 from .core.logging import configure_logging  # noqa: E402
 from .core.storage import JobStore  # noqa: E402
+from .persistence import get_repository as _get_repository  # noqa: E402
+import app.persistence as persistence  # noqa: E402
 from .services import model_registry as registry_module  # noqa: E402
 from .workers.analysis_worker import AnalysisWorker  # noqa: E402
 
@@ -34,13 +37,15 @@ logger = logging.getLogger("deepfake")
 def create_app(settings: Settings | None = None,
                store: JobStore | None = None,
                registry: registry_module.ModelRegistry | None = None,
-               worker: AnalysisWorker | None = None) -> FastAPI:
+               worker: AnalysisWorker | None = None,
+               repository=None) -> FastAPI:
     configure_logging()
     settings = settings or get_settings()
     settings.jobs_dir.mkdir(parents=True, exist_ok=True)
     store = store or JobStore()
     registry = registry or registry_module.ModelRegistry(settings)
-    worker = worker or AnalysisWorker(settings, store, registry)
+    repository = repository or persistence.get_repository(settings)
+    worker = worker or AnalysisWorker(settings, store, registry, repository=repository)
 
     app = FastAPI(
         title="Deepfake Detection Inference API",
@@ -53,7 +58,9 @@ def create_app(settings: Settings | None = None,
     app.state.store = store
     app.state.registry = registry
     app.state.worker = worker
-    app.include_router(create_router(store, registry, worker))
+    app.state.repository = repository
+    app.include_router(create_router(store, registry, worker, settings, repository))
+    app.include_router(create_auth_history_router(repository, settings))
     return app
 
 

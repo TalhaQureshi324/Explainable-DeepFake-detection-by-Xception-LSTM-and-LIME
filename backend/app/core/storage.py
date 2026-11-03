@@ -47,6 +47,10 @@ class JobStore:
             job["updated_at"] = self._now()
             return job
 
+    def remove(self, analysis_id: str) -> None:
+        with self._lock:
+            self._jobs.pop(analysis_id, None)
+
     def count_by_status(self, statuses) -> int:
         with self._lock:
             return sum(1 for j in self._jobs.values() if j.get("status") in statuses)
