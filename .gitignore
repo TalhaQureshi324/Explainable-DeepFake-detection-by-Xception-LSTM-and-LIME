@@ -55,3 +55,4 @@ hf_space/deepfake_report_test.pdf
 _phase_c_validate.py
 _hf_audit.py
 _p5_hf_e2e.py
+hf_space_deploy/
