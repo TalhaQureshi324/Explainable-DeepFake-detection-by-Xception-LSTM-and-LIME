@@ -16,11 +16,10 @@ results, interactive report and the downloadable PDF on your own machine.
 # Terminal 1 — inference backend
 "C:\Program Files\Python311\python.exe" -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 
-# Terminal 2 — frontend (proxy target is set at BUILD time)
+# Terminal 2 — frontend (proxy target read at RUNTIME from INFERENCE_API_URL)
 cd frontend
-set INFERENCE_API_URL=http://127.0.0.1:8000
-npm run build
-npm run start
+npm install
+npm run dev
 ```
 
 Open **http://localhost:3000** — use the sun/moon button (dark/light) and the

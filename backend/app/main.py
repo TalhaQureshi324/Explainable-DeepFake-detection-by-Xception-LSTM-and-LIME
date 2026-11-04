@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -61,6 +62,21 @@ def create_app(settings: Settings | None = None,
     app.state.repository = repository
     app.include_router(create_router(store, registry, worker, settings, repository))
     app.include_router(create_auth_history_router(repository, settings))
+
+    # When the backend is hosted separately from the frontend (recommended for
+    # the TensorFlow workload), the browser may talk to it directly for large
+    # uploads. origins come from CORS_ALLOW_ORIGINS (comma-separated); no CORS
+    # is configured unless the variable is set, keeping the proxied local
+    # setup unchanged.
+    cors_origins = [o.strip() for o in os.environ.get("CORS_ALLOW_ORIGINS", "").split(",") if o.strip()]
+    if cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=cors_origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
     return app
 
 
