@@ -15,6 +15,8 @@ import {
   Alert, Badge, Button, Card, CardContent, Select, Switch,
 } from "@/components/ui/primitives";
 import { ApiError, createAnalysis, getModels } from "@/lib/api/client";
+import { inferenceMode, getInferenceProvider } from "@/lib/inference/provider";
+import { saveAnalysis } from "@/lib/inference/types";
 import type { ModelSummary } from "@/lib/api/types";
 
 const VIDEO_EXT = [".mp4", ".avi", ".mov", ".mkv", ".webm"];
@@ -37,6 +39,7 @@ export default function AnalyzePage() {
   const [modelVersion, setModelVersion] = useState<string>("");
   const [modelsError, setModelsError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [statusLine, setStatusLine] = useState<string>("");
 
   useEffect(() => {
     let alive = true;
@@ -100,11 +103,25 @@ export default function AnalyzePage() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await createAnalysis(file, {
-        modelVersion: modelVersion || undefined,
-        explain,
+      if (inferenceMode() === "fastapi") {
+        const res = await createAnalysis(file, {
+          modelVersion: modelVersion || undefined,
+          explain,
+        });
+        router.push(`/analysis/${res.analysis_id}`);
+        return;
+      }
+      // Hugging Face mode: browser -> Space directly (no Vercel proxying).
+      const provider = getInferenceProvider();
+      setStatusLine(provider.statusLabel?.("connecting") ?? "");
+      const record = await provider.predict(file, {
+        enableXai: explain,
+        filename: file.name,
+        mimeType: file.type,
+        onStatus: (m) => setStatusLine(provider.statusLabel?.("running") ?? m),
       });
-      router.push(`/analysis/${res.analysis_id}`);
+      saveAnalysis(record);
+      router.push(`/analysis/${record.analysis_id}`);
     } catch (e) {
       const apiErr = e as ApiError;
       setError(apiErr.status === 0 ? t.backendDown : `${t.uploadFailed}: ${apiErr.detail}`);
@@ -236,7 +253,8 @@ export default function AnalyzePage() {
         <Button size="lg" onClick={submit} disabled={!file || submitting || !!error}>
           {submitting ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t.analyzing}
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />{" "}
+              {statusLine ? statusLine : t.analyzing}
             </>
           ) : (
             t.analyzeButton

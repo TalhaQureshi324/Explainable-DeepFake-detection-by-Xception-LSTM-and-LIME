@@ -6,6 +6,7 @@ import { Fingerprint, Languages, LogIn, LogOut, Moon, Sun, UserRound } from "luc
 import { useI18n } from "@/lib/i18n/context";
 import { useTheme } from "@/lib/theme/provider";
 import { useAuth } from "@/lib/auth/context";
+import { inferenceMode } from "@/lib/inference/provider";
 
 export function SiteHeader() {
   const { t, locale, setLocale } = useI18n();
@@ -13,6 +14,7 @@ export function SiteHeader() {
   const { user, signOut } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
+  const hfMode = inferenceMode() !== "fastapi";
 
   const linkCls = (active: boolean) =>
     `text-sm transition-colors hover:text-ink-1 ${
@@ -35,12 +37,16 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-5 md:flex" aria-label="Main">
           <Link href="/" className={linkCls(pathname === "/")}>{t.navHome}</Link>
           <Link href="/analyze" className={linkCls(pathname.startsWith("/analyze"))}>{t.navAnalyze}</Link>
-          <Link href="/dashboard" className={linkCls(pathname.startsWith("/dashboard"))}>{t.navDashboard}</Link>
-          <Link href="/history" className={linkCls(pathname.startsWith("/history"))}>{t.navHistory}</Link>
+          {!hfMode && (
+            <>
+              <Link href="/dashboard" className={linkCls(pathname.startsWith("/dashboard"))}>{t.navDashboard}</Link>
+              <Link href="/history" className={linkCls(pathname.startsWith("/history"))}>{t.navHistory}</Link>
+            </>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
-          {user ? (
+          {!hfMode && (user ? (
             <div className="flex items-center gap-2" title={t.accountMenu}>
               <UserRound className="hidden h-4 w-4 text-ink-3 sm:inline" aria-hidden />
               <span className="hidden max-w-40 truncate text-xs text-ink-2 sm:inline" dir="ltr">
@@ -64,7 +70,7 @@ export function SiteHeader() {
               <LogIn className="h-4 w-4 rtl:rotate-180" aria-hidden />
               <span className="hidden sm:inline">{t.signIn}</span>
             </Link>
-          )}
+          ))}
           <button
             type="button"
             onClick={() => setLocale(locale === "en" ? "ur" : "en")}

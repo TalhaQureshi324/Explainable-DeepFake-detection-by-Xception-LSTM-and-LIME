@@ -47,6 +47,8 @@ export function ResultView({ analysis }: { analysis: AnalysisResponse }) {
   const faceUrl = artifactUrl(analysis.artifacts?.processed_face);
   const limeUrl = artifactUrl(analysis.artifacts?.lime);
   const isImage = m?.type === "image";
+  const score = p.fake_score ?? null;
+  const thr = p.threshold ?? null;
 
   return (
     <div className="grid gap-5 lg:grid-cols-5">
@@ -67,26 +69,28 @@ export function ResultView({ analysis }: { analysis: AnalysisResponse }) {
 
           <div className="mt-6 rounded-lg bg-surface-2 p-4" dir="ltr">
             <p className="text-xs text-ink-3">{t.fakeScore}</p>
-            <p className="mt-1 font-mono text-2xl font-bold">{p.fake_score.toFixed(4)}</p>
+            <p className="mt-1 font-mono text-2xl font-bold">
+              {score !== null ? score.toFixed(4) : "—"}
+            </p>
             {/* score vs threshold bar */}
             <div className="relative mt-3 h-2 rounded-full bg-surface-3">
               <div
                 className="absolute inset-y-0 rounded-full"
                 style={{
-                  width: `${Math.min(100, p.fake_score * 100)}%`,
+                  width: `${Math.min(100, (score ?? 0) * 100)}%`,
                   background: fake ? "rgb(var(--verdict-fake))" : "rgb(var(--verdict-real))",
                 }}
               />
               <div
                 className="absolute -top-1 h-4 w-0.5 bg-ink-1"
-                style={{ left: `${Math.min(100, p.threshold * 100)}%` }}
-                title={`${t.threshold}: ${p.threshold}`}
+                style={{ left: `${Math.min(100, (thr ?? 0) * 100)}%` }}
+                title={`${t.threshold}: ${thr ?? "—"}`}
               />
             </div>
             <div className="mt-1 flex justify-between text-[11px] text-ink-3">
               <span>0</span>
               <span>
-                {t.threshold}: {p.threshold} ({p.threshold_version})
+                {t.threshold}: {thr ?? "—"} ({p.threshold_version})
               </span>
               <span>1</span>
             </div>

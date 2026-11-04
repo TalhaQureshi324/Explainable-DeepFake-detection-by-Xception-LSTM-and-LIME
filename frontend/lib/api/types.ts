@@ -17,7 +17,8 @@ export type JobState =
 export type PredictionMethod =
   | "full_sequence"
   | "sliding_window_ensemble"
-  | "replicated_frame_sequence";
+  | "replicated_frame_sequence"
+  | (string & {});  // provider-specific methods (e.g. hf_space ensemble)
 
 export interface WindowScore {
   label: string;
@@ -43,10 +44,10 @@ export interface MediaInfo {
 }
 
 export interface Prediction {
-  label: "REAL" | "FAKE";
-  fake_score: number;
-  threshold: number;
-  threshold_version: string;
+  label: "REAL" | "FAKE" | null;   // null while an analysis is in flight
+  fake_score: number | null;
+  threshold: number | null;
+  threshold_version: string | null;
   method: PredictionMethod;
   score_is_calibrated: boolean;
 }

@@ -1,30 +1,56 @@
 "use client";
 
 /**
- * Analysis page: polls GET /v1/analyses/{id} via useAnalysisPolling and shows
- * either the live status timeline, the full results, or a recoverable failure.
- * 404s (backend restart loses in-memory jobs) are handled explicitly.
+ * Analysis page: renders results from the session store in Hugging Face guest
+ * mode, or polls the FastAPI backend (GET /v1/analyses/{id}) in fastapi mode.
  */
 
 import Link from "next/link";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { errorCodeToMessageKey, useAnalysisPolling } from "@/lib/api/use-analysis";
+import { errorCodeToMessageKey, useAnalysisPolling, type PollPhase } from "@/lib/api/use-analysis";
+import { inferenceMode } from "@/lib/inference/provider";
+import { getStoredAnalysis } from "@/lib/inference/types";
+import type { StoredAnalysis } from "@/lib/inference/types";
 import { StatusTimeline } from "@/components/analysis/status-timeline";
 import { ResultView } from "@/components/analysis/result-view";
 import { Alert, ButtonLink, Skeleton } from "@/components/ui/primitives";
 
-export default function AnalysisPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type ViewPhase =
+  | { kind: "missing" }
+  | Exclude<PollPhase, { kind: "polling" }>
+  | { kind: "polling"; analysis: StoredAnalysis };
+
+export default function AnalysisPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const { t } = useI18n();
-  const phase = useAnalysisPolling(id);
+
+  // Hugging Face mode: analyses live in the session store only (guest mode).
+  if (inferenceMode() !== "fastapi") {
+    const stored = getStoredAnalysis(id);
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <AnalysisBody id={id} phase={stored ? { kind: "done", analysis: stored } : { kind: "missing" }} />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <AnalysisBodyWithPolling id={id} />
+    </div>
+  );
+}
+
+function AnalysisBodyWithPolling({ id }: { id: string }) {
+  const phase = useAnalysisPolling(id);
+  return <AnalysisBody id={id} phase={phase} />;
+}
+
+function AnalysisBody({ id, phase }: { id: string; phase: ViewPhase }) {
+  const { t } = useI18n();
+
+  return (
+    <>
       <div className="mb-5 flex items-center justify-between">
         <Link
           href="/analyze"
@@ -43,6 +69,12 @@ export default function AnalysisPage({
           ? t.resultsTitle
           : t.statusTitle}
       </h1>
+
+      {phase.kind === "missing" && (
+        <Alert tone="info" title={t.ephemeralTitle}>
+          {t.ephemeralNote}
+        </Alert>
+      )}
 
       {phase.kind === "loading" && (
         <div className="grid gap-4 sm:grid-cols-5">
@@ -101,6 +133,6 @@ export default function AnalysisPage({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
