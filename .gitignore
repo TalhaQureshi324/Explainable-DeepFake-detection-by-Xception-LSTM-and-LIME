@@ -46,3 +46,12 @@ backend_p4*.log
 frontend_p4.log
 backend_v.log
 frontend_v.log
+hf_space/*.keras
+hf_space/deploy.prototxt
+hf_space/res10*
+hf_space/__pycache__
+hf_space/_test.pdf
+hf_space/deepfake_report_test.pdf
+_phase_c_validate.py
+_hf_audit.py
+_p5_hf_e2e.py

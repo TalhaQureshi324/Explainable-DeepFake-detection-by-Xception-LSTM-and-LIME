@@ -1,0 +1,12 @@
+# Runtime dependencies for the extended Deep-Fake-Detection Space.
+# (The Space already pins gradio via the SDK; this file covers app imports.)
+
+gradio>=4.0.0
+tensorflow>=2.15.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+lime>=0.2.0
+scikit-image>=0.22.0
+reportlab>=4.0.0
+matplotlib>=3.7.0
