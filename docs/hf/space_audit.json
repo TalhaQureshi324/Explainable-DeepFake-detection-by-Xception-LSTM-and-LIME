@@ -1,0 +1,30 @@
+{
+  "space": "MuhammadTalha121/Deep-Fake-Detection",
+  "tests": [
+    {
+      "label": "image_no_xai",
+      "xai": false,
+      "seconds": 62.5,
+      "markdown": "## 🟥 FAKE\n\n| Confidence | 78.53% |\n| Average Score | 0.7853 *(1 = Fake, 0 = Real)* |\n| Std Deviation | 0.0000 |\n| Ensemble Windows | 2 |\n| Input Type | Image (single frame) |",
+      "face_file": "C:\\Users\\Talha Qureshi\\AppData\\Local\\Temp\\gradio\\1c0bc729a0942020e62921f8e88a9077e9597dee3f3afa7deb7ec8da38e84eed\\image.webp",
+      "lime_file": null
+    },
+    {
+      "label": "video_no_xai",
+      "xai": false,
+      "seconds": 16.8,
+      "markdown": "## 🟩 REAL\n\n| Confidence | 53.48% |\n| Average Score | 0.4652 *(1 = Fake, 0 = Real)* |\n| Std Deviation | 0.0000 |\n| Ensemble Windows | 2 |\n| Input Type | Video (5 face frames extracted) |",
+      "face_file": "C:\\Users\\Talha Qureshi\\AppData\\Local\\Temp\\gradio\\13ef340f79fd98078f0ce0b2c831617052eb270cda803fd85f8c80204fb18aa6\\image.webp",
+      "lime_file": null
+    },
+    {
+      "label": "image_with_xai",
+      "xai": true,
+      "seconds": 495.8,
+      "markdown": "## 🟥 FAKE\n\n| Confidence | 78.53% |\n| Average Score | 0.7853 *(1 = Fake, 0 = Real)* |\n| Std Deviation | 0.0000 |\n| Ensemble Windows | 2 |\n| Input Type | Image (single frame) |",
+      "face_file": "C:\\Users\\Talha Qureshi\\AppData\\Local\\Temp\\gradio\\1c0bc729a0942020e62921f8e88a9077e9597dee3f3afa7deb7ec8da38e84eed\\image.webp",
+      "lime_file": "C:\\Users\\Talha Qureshi\\AppData\\Local\\Temp\\gradio\\13e279539e1bfa80bd05c7d020f781981952fbd19c6fe4c4595d015099f75988\\image.webp"
+    }
+  ],
+  "connect_seconds": 5.3
+}
