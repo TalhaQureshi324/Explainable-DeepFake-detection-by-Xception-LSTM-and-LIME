@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Download, FileText, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { ApiError, artifactUrl, downloadReportPdf, getReport } from "@/lib/api/client";
+import { inferenceMode } from "@/lib/inference/provider";
+import { getStoredAnalysis } from "@/lib/inference/types";
+import { buildClientReport } from "@/lib/inference/report-client";
 import type { ReportData } from "@/lib/api/types";
 import { WindowsChart } from "@/components/analysis/windows-chart";
 import {
@@ -74,6 +77,16 @@ export default function ReportPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     let alive = true;
+    if (inferenceMode() !== "fastapi") {
+      // HF guest mode: build the report from the session-stored analysis
+      const stored = getStoredAnalysis(id);
+      if (stored && stored.status === "COMPLETED") {
+        setReport(buildClientReport(stored) as never);
+      } else {
+        setError(new ApiError(404, "This analysis is not in this browser tab."));
+      }
+      return;
+    }
     getReport(id)
       .then((r) => alive && setReport(r))
       .catch((e: ApiError) => alive && setError(e));
